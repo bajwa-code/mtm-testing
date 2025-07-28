@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Trade Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f8fafc; /* Light gray background */
+            color: #1e293b; /* Dark slate text */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray track */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8; /* Gray thumb */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* Darker gray on hover */
+        }
+        .sortable-header {
+            cursor: pointer;
+            position: relative;
+            padding-right: 20px; /* Space for arrow */
+        }
+        .sortable-header::after {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 4px solid transparent;
+            opacity: 0.5;
+        }
+        .sortable-header.asc::after {
+            border-bottom-color: #333;
+            opacity: 1;
+        }
+        .sortable-header.desc::after {
+            border-top-color: #333;
+            opacity: 1;
+        }
+
+        /* Custom styles for hamburger menu */
+        @media (max-width: 639px) { /* Tailwind's 'sm' breakpoint is 640px */
+            /* Hide the navigation by default on small screens */
+            #mainNav.mobile-menu-closed {
+                display: none;
+            }
+            /* Show the navigation when the menu is open */
+            #mainNav.mobile-menu-open {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                background-color: #2563eb; /* Match header blue */
+                position: absolute;
+                top: 64px; /* Height of header */
+                left: 0;
+                padding: 1rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                z-index: 40;
+            }
+            #mainNav.mobile-menu-open button {
+                width: 100%;
+                text-align: left;
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.5rem;
+                border-radius: 0.375rem;
+                /* Background and text color for mobile menu items */
+                background-color: transparent; /* Default mobile menu item background */
+                color: white; /* Default mobile menu item text */
+            }
+            /* Mobile menu button hover state */
+            #mainNav.mobile-menu-open button:hover {
+                background-color: white; /* White background on hover */
+                color: #2563eb; /* Blue text on hover */
+            }
+        }
+
+        /* General navigation button styles */
+        #mainNav button {
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+        }
+
+        /* Hover state for desktop navigation buttons */
+        #mainNav button:not(.bg-white):hover {
+            background-color: white;
+            color: #2563eb; /* Blue text */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Custom Modal Structure -->
+    <div id="customModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+            <p id="modalMessage" class="text-gray-700 mb-6"></p>
+            <div class="flex justify-end space-x-3">
+                <button id="modalCancelBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </button>
+                <button id="modalConfirmBtn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 shadow-md relative">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Milk Trade Manager</h1>
+            <!-- Hamburger menu button for small screens -->
+            <div class="sm:hidden">
+                <button id="hamburgerBtn" class="text-white focus:outline-none p-2 rounded-md hover:bg-blue-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- Navigation links - hidden on small screens by default, flex on medium and up -->
+            <!-- Added mobile-menu-closed class to explicitly hide it on small screens -->
+            <nav id="mainNav" class="sm:flex space-x-4 mobile-menu-closed">
+                <button id="dashboardTab" class="px-4 py-2 rounded-md transition-colors">
+                    Dashboard
+                </button>
+                <button id="customersTab" class="px-4 py-2 rounded-md transition-colors">
+                    Customers
+                </button>
+                <button id="transactionsTab" class="px-4 py-2 rounded-md transition-colors">
+                    Transactions
+                </button>
+                <button id="paymentsTab" class="px-4 py-2 rounded-md transition-colors">
+                    Payments
+                </button>
+                <button id="dataManagementTab" class="px-4 py-2 rounded-md transition-colors">
+                    Data Management
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto p-4 flex-grow">
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="tab-content bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Dashboard Overview</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-blue-50 p-5 rounded-lg shadow-md flex items-center justify-between">
+                    <div>
+                        <p class="text-lg font-medium text-blue-700">Total Owed To You (Buyers)</p>
+                        <p id="totalOwedToYou" class="text-3xl font-bold text-blue-900 mt-1">₹0.00</p>
+                    </div>
+                    <svg class="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.592 1L21 12m-2.592 3C14.08 15.598 13.11 16 12 16m-3-4s-1.14-1.23-2.5-1.75M11 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V11m-5-10v4h4L14 3z"></path></svg>
+                </div>
+                <div class="bg-red-50 p-5 rounded-lg shadow-md flex items-center justify-between">
+                    <div>
+                        <p class="text-lg font-medium text-red-700">Total You Owe (Sellers)</p>
+                        <p id="totalYouOwe" class="text-3xl font-bold text-red-900 mt-1">₹0.00</p>
+                    </div>
+                    <svg class="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Customer Balances</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="dashboardSearch" placeholder="Search customer balances..." class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="dashboardStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="dashboardEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-inner">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="name">Customer Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="type">Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg sortable-header" data-sort-column="balance">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardBalancesTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Balance rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="dashboardPagination" class="flex justify-between items-center mt-4 space-x-2">
+                <span id="dashboardEntryCount" class="text-sm text-gray-600"></span>
+            </div>
+        </section>
+
+        <!-- Customers Section -->
+        <section id="customersSection" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Customer Management</h2>
+
+            <form id="customerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-4 bg-blue-50 rounded-lg shadow-inner">
+                <input type="hidden" id="customerId">
+                <div>
+                    <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                    <input type="text" id="customerName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="customerType" class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
+                    <select id="customerType" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Select Type</option>
+                        <option value="seller">Seller (You buy from)</option>
+                        <option value="buyer">Buyer (You sell to)</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="customerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input type="tel" id="customerPhone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <!-- New fields for default transaction values -->
+                <div>
+                    <label for="defaultQuantity" class="block text-sm font-medium text-gray-700 mb-1">Default Quantity (Liters)</label>
+                    <input type="number" id="defaultQuantity" step="0.01" min="0" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="defaultRate" class="block text-sm font-medium text-gray-700 mb-1">Default Rate (₹/Liter)</label>
+                    <input type="number" id="defaultRate" step="0.01" min="0" value="0" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="defaultMilkType" class="block text-sm font-medium text-gray-700 mb-1">Default Milk Type</label>
+                    <select id="defaultMilkType" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Select Default Milk Type</option>
+                        <option value="Buffalo">Buffalo</option>
+                        <option value="Cow">Cow</option>
+                    </select>
+                </div>
+                <!-- End new fields -->
+                <div class="md:col-span-2 flex justify-end space-x-3">
+                    <button type="reset" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors font-medium">Clear</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-md font-medium">Add/Update Customer</button>
+                </div>
+            </form>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">All Customers</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="customerSearch" placeholder="Search customers..." class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="customerStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="customerEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-inner">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="name">Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="type">Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="phone">Phone</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="defaultQuantity">Default Quantity (L)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="defaultRate">Default Rate (₹/L)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="defaultMilkType">Default Milk Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Customer rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="customersPagination" class="flex justify-between items-center mt-4 space-x-2">
+                <span id="customerEntryCount" class="text-sm text-gray-600"></span>
+            </div>
+        </section>
+
+        <!-- Transactions Section -->
+        <section id="transactionsSection" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Milk Transactions</h2>
+
+            <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-4 bg-blue-50 rounded-lg shadow-inner">
+                <div class="relative">
+                    <label for="transactionCustomerSearch" class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+                    <input type="text" id="transactionCustomerSearch" placeholder="Search customer by name..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <input type="hidden" id="transactionCustomerId" required> <!-- Hidden field to store selected ID -->
+                    <div id="customerSearchResults" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto mt-1 hidden">
+                        <!-- Search results will appear here -->
+                    </div>
+                </div>
+    
+                <div>
+                    <label for="shift" class="block text-sm font-medium text-gray-700 mb-1">Morning or Evening</label>
+                    <select id="shift" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Select Shift</option>
+                        <option value="Morning">Morning</option>
+                        <option value="Evening">Evening</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="selectedCustomerTypeDisplay" class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
+                    <input type="text" id="selectedCustomerTypeDisplay" readonly class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-600 cursor-not-allowed sm:text-sm">
+                    <!-- The actual transaction type ('buy'/'sell') will be derived internally -->
+                </div>
+                <div>
+                    <label for="transactionQuantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity (Liters)</label>
+                    <input type="number" id="transactionQuantity" step="0.01" min="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="transactionRate" class="block text-sm font-medium text-gray-700 mb-1">Rate (₹/Liter)</label>
+                    <input type="number" id="transactionRate" step="0.01" min="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="milkType" class="block text-sm font-medium text-gray-700 mb-1">Milk Type</label>
+                    <select id="milkType" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Select Milk Type</option>
+                        <option value="Buffalo">Buffalo</option>
+                        <option value="Cow">Cow</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="transactionDate" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" id="transactionDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div class="md:col-span-2 flex justify-end">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-md font-medium">Add Transaction</button>
+                </div>
+            </form>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">All Transactions</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="transactionSearch" placeholder="Search transactions..." class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="transactionStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="transactionEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-inner">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="date">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="customerName">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="customerTypeDisplay">Customer Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="quantity">Quantity (L)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="rate">Rate (₹/L)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="milkType">Milk Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="shift">Shift</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg sortable-header" data-sort-column="totalAmount">Total Amount (₹)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Transaction rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="transactionsPagination" class="flex justify-between items-center mt-4 space-x-2">
+                <span id="transactionEntryCount" class="text-sm text-gray-600"></span>
+            </div>
+            <!-- New Section: Check for Missing Transactions -->
+            <div class="bg-yellow-50 rounded-lg shadow-lg p-6 mt-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-3">Check for Missing Daily Transactions</h3>
+                <p class="text-gray-700 mb-4">Select a date to see which customers have no recorded transactions for that day.</p>
+                <div class="flex flex-col sm:flex-row gap-4 items-center mb-6">
+                    <label for="missingTransactionDate" class="block text-sm font-medium text-gray-700">Date to Check:</label>
+                    <input type="date" id="missingTransactionDate" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm flex-grow">
+                    <button id="checkMissingTransactionsBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-md font-medium flex-shrink-0">
+                        Check for Missing
+                    </button>
+                </div>
+                <div id="missingTransactionsResults" class="bg-white p-4 rounded-md border border-gray-200 min-h-[100px] max-h-[300px] overflow-y-auto">
+                    <p class="text-gray-500 text-sm">Results will appear here...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payments Section -->
+        <section id="paymentsSection" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Payment Management</h2>
+
+            <form id="paymentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-4 bg-blue-50 rounded-lg shadow-inner">
+                <div class="relative">
+                    <label for="paymentCustomerSearch" class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+                    <input type="text" id="paymentCustomerSearch" placeholder="Search customer by name..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <input type="hidden" id="paymentCustomerId" required> <!-- Hidden field to store selected ID -->
+                    <div id="paymentCustomerSearchResults" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto mt-1 hidden">
+                        <!-- Search results will appear here -->
+                    </div>
+                </div>
+                <div>
+                    <label for="paymentSelectedCustomerTypeDisplay" class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
+                    <input type="text" id="paymentSelectedCustomerTypeDisplay" readonly class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-600 cursor-not-allowed sm:text-sm">
+                </div>
+                <div>
+                    <label for="paymentType" class="block text-sm font-medium text-gray-700 mb-1">Payment Type</label>
+                    <select id="paymentType" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option value="">Select Type</option>
+                        <option value="paid_to_seller">Paid to Seller</option>
+                        <option value="received_from_buyer">Received from Buyer</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="paymentAmount" class="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+                    <input type="number" id="paymentAmount" step="0.01" min="0" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="paymentDate" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" id="paymentDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div class="md:col-span-2 flex justify-end">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-md font-medium">Add Payment</button>
+                </div>
+            </form>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">All Payments</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="paymentSearch" placeholder="Search payments..." class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="paymentStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <input type="date" id="paymentEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+            <div class="overflow-x-auto bg-gray-50 rounded-lg shadow-inner">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="date">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="customerName">Customer</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="type">Type</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="amount">Amount (₹)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Payment rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="paymentsPagination" class="flex justify-between items-center mt-4 space-x-2">
+                <span id="paymentEntryCount" class="text-sm text-gray-600"></span>
+            </div>
+        </section>
+
+        <!-- Data Management Section -->
+        <section id="dataManagementSection" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Data Management (JSON File)</h2>
+            <p class="text-gray-700 mb-6">Use this section to export your current data as a JSON file for backup, or import data from a previously saved JSON file. Importing data will be *merged* with your current data in the application.</p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="exportDataBtn" class="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-md font-medium flex-grow">
+                    Export Data to JSON
+                </button>
+                <div class="flex-grow flex flex-col sm:flex-row gap-2">
+                    <input type="file" id="importFileInput" accept=".json" class="flex-grow block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-md file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100"/>
+                    <button id="importDataBtn" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors shadow-md font-medium">
+                        Import Data from JSON
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 text-center text-sm mt-8">
+        <p>&copy; <span id="currentYear"></span> Milk Trade Manager. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Global data arrays
+        let customers = [];
+        let transactions = [];
+        let payments = [];
+
+        // --- Sorting and Search State ---
+        // Changed default sort direction to 'desc' for all relevant sections
+        let dashboardSortConfig = { column: 'name', direction: 'desc' }; // Changed to desc
+        let customerSortConfig = { column: 'id', direction: 'desc' }; // Changed to sort by id desc for newest on top
+        let transactionSortConfig = { column: 'date', direction: 'desc' };
+        let paymentSortConfig = { column: 'date', direction: 'desc' };
+
+        let dashboardSearchTerm = '';
+        let customerSearchTerm = '';
+        let transactionSearchTerm = '';
+        let paymentSearchTerm = '';
+
+        // --- Date Range Filter State ---
+        let dashboardDateRange = { start: '', end: '' };
+        let customerDateRange = { start: '', end: '' };
+        let transactionDateRange = { start: '', end: '' };
+        let paymentDateRange = { start: '', end: '' };
+
+        // --- Pagination State ---
+        const itemsPerPage = 10;
+        // Using objects to hold currentPage for mutable references
+        let dashboardPaginationState = { currentPage: 1 };
+        let customerPaginationState = { currentPage: 1 };
+        let transactionPaginationState = { currentPage: 1 };
+        let paymentPaginationState = { currentPage: 1 };
+
+        // --- Utility Functions ---
+
+        // Function to generate a unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        }
+
+        // Function to format date for display
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            });
+        }
+
+        // Function to format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+            }).format(amount);
+        }
+
+        /**
+         * Filters data based on search term and date range.
+         * @param {Array} data - The array of data to filter.
+         * @param {string} searchTerm - The search term.
+         * @param {Array<string>} fieldsToSearch - The fields to search within for the search term.
+         * @param {Object} dateRange - Object with start and end date strings (YYYY-MM-DD).
+         * @param {boolean} filterByActivity - If true, for customer/dashboard data, filters by activity within date range.
+         * @returns {Array} The filtered data.
+         */
+        function filterData(data, searchTerm, fieldsToSearch, dateRange, filterByActivity = false) {
+            console.log('filterData: Initial data:', JSON.parse(JSON.stringify(data)));
+            console.log('filterData: Search Term:', searchTerm);
+            console.log('filterData: Date Range:', dateRange);
+
+            let filtered = data;
+            const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+            // Apply text search filter
+            if (searchTerm) {
+                filtered = filtered.filter(item => {
+                    return fieldsToSearch.some(field => {
+                        let value;
+                        if (field === 'customerTypeDisplay') {
+                            const customer = customers.find(c => c.id === item.customerId);
+                            value = customer ? (customer.type === 'seller' ? 'Seller' : 'Buyer') : '';
+                        } else if (field === 'customerName') {
+                            const customer = customers.find(c => c.id === item.customerId);
+                            value = customer ? customer.name : '';
+                        } else {
+                            value = item[field];
+                        }
+
+                        if (value === null || value === undefined) return false;
+
+                        if (field === 'date') {
+                            return formatDate(value).toLowerCase().includes(lowerCaseSearchTerm);
+                        }
+
+                        return String(value).toLowerCase().includes(lowerCaseSearchTerm);
+                    });
+                });
+            }
+
+            // Apply date range filter
+            if (dateRange && (dateRange.start || dateRange.end)) {
+                const startDate = dateRange.start ? new Date(dateRange.start + 'T00:00:00') : null;
+                const endDate = dateRange.end ? new Date(dateRange.end + 'T23:59:59') : null;
+
+                if (filterByActivity) {
+                    // For Dashboard and Customers: filter by customer activity within the date range
+                    const activeCustomerIds = new Set();
+                    transactions.forEach(t => {
+                        const transactionDate = new Date(t.date + 'T00:00:00');
+                        if ((!startDate || transactionDate >= startDate) && (!endDate || transactionDate <= endDate)) {
+                            activeCustomerIds.add(t.customerId);
+                        }
+                    });
+                    payments.forEach(p => {
+                        const paymentDate = new Date(p.date + 'T00:00:00');
+                        if ((!startDate || paymentDate >= startDate) && (!endDate || paymentDate <= endDate)) {
+                            activeCustomerIds.add(p.customerId);
+                        }
+                    });
+
+                    filtered = filtered.filter(item => activeCustomerIds.has(item.id)); // item.id is customerId for balances/customers
+                } else {
+                    // For Transactions and Payments: filter items directly by their date
+                    filtered = filtered.filter(item => {
+                        const itemDate = new Date(item.date + 'T00:00:00');
+                        return (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate);
+                    });
+                }
+            }
+            console.log('filterData: Filtered data:', JSON.parse(JSON.stringify(filtered)));
+            return filtered;
+        }
+
+        // --- Modal Logic ---
+        const customModal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+
+        let onModalConfirmCallback = () => {};
+
+        function showModal(title, message, onConfirm) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            onModalConfirmCallback = onConfirm;
+            customModal.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            customModal.classList.add('hidden');
+        }
+
+        modalConfirmBtn.addEventListener('click', () => {
+            onModalConfirmCallback();
+            hideModal();
+        });
+
+        modalCancelBtn.addEventListener('click', () => {
+            hideModal();
+        });
+
+        // --- Data Persistence (LocalStorage Primary, JSON File Backup) ---
+
+        /**
+         * Saves all current data (customers, transactions, payments) to localStorage.
+         * This is the primary persistence mechanism for easy access on reopening.
+         */
+        function saveData() {
+            try {
+                const customersJson = JSON.stringify(customers);
+                const transactionsJson = JSON.stringify(transactions);
+                const paymentsJson = JSON.stringify(payments);
+
+                localStorage.setItem('milkTradeCustomers', customersJson);
+                localStorage.setItem('milkTradeTransactions', transactionsJson);
+                localStorage.setItem('milkTradePayments', paymentsJson);
+                console.log('Data saved to localStorage successfully.');
+                console.log('Customers in localStorage:', localStorage.getItem('milkTradeCustomers').length, 'bytes');
+                console.log('Transactions in localStorage:', localStorage.getItem('milkTradeTransactions').length, 'bytes');
+                console.log('Payments in localStorage:', localStorage.getItem('milkTradePayments').length, 'bytes');
+            } catch (e) {
+                console.error("Error saving data to localStorage:", e);
+                showModal('Save Error', 'Could not save data to local storage. Please check browser settings and try again.', () => {});
+            }
+        }
+
+        /**
+         * Loads all data (customers, transactions, payments) from localStorage.
+         * This is called on initial page load.
+         */
+        function loadData() {
+            try {
+                const loadedCustomers = localStorage.getItem('milkTradeCustomers');
+                const loadedTransactions = localStorage.getItem('milkTradeTransactions');
+                const loadedPayments = localStorage.getItem('milkTradePayments');
+
+                customers = loadedCustomers ? JSON.parse(loadedCustomers) : [];
+                transactions = loadedTransactions ? JSON.parse(loadedTransactions) : [];
+                payments = loadedPayments ? JSON.parse(loadedPayments) : [];
+
+                console.log('Data loaded from localStorage successfully.');
+                console.log('Loaded Customers count:', customers.length);
+                console.log('Loaded Transactions count:', transactions.length);
+                console.log('Loaded Payments count:', payments.length);
+            } catch (e) {
+                console.error("Error parsing localStorage data, initializing empty:", e);
+                customers = [];
+                transactions = [];
+                payments = [];
+                showModal('Load Error', 'Could not load data from local storage. Starting with empty data. This might be due to corrupted saved data.', () => {});
+            }
+        }
+
+        /**
+         * Exports all current data to a JSON file for backup.
+         * This is a secondary backup mechanism.
+         */
+        function exportDataToJson() {
+            const data = {
+                customers: customers,
+                transactions: transactions,
+                payments: payments
+            };
+            const jsonString = JSON.stringify(data, null, 2); // Pretty print JSON
+
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'milk_trade_data_backup.json'; // Renamed for clarity
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showModal('Export Complete', 'Your data has been exported to milk_trade_data_backup.json.', () => {});
+        }
+
+        /**
+         * Imports data from a selected JSON file, merging with current data.
+         * This is a secondary recovery/import mechanism.
+         */
+        function importDataFromJson(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                showModal('Import Error', 'Please select a JSON file to import.', () => {});
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (importedData.customers && importedData.transactions && importedData.payments) {
+                        // Merge imported data with existing data
+                        customers = customers.concat(importedData.customers);
+                        transactions = transactions.concat(importedData.transactions);
+                        payments = payments.concat(importedData.payments);
+
+                        saveData(); // Save merged data to localStorage
+                        renderAllData();
+                        showModal('Import Complete', 'Data successfully imported from file and merged with current data. Merged data saved to local storage.', () => {});
+                    } else {
+                        showModal('Import Error', 'Invalid JSON file format. Missing expected data structures (customers, transactions, payments).', () => {});
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON file:", error);
+                    showModal('Import Error', 'Failed to parse JSON file. Please ensure it is valid JSON.', () => {});
+                }
+            };
+            reader.onerror = () => {
+                showModal('Import Error', 'Failed to read file.', () => {});
+            };
+            reader.readAsText(file);
+            // Clear the file input after reading
+            event.target.value = '';
+        }
+
+        // --- Core Logic ---
+
+        // Calculate Customer Balances
+        function calculateBalances() {
+            const balances = {};
+
+            // Initialize balances for all customers
+            customers.forEach(customer => {
+                balances[customer.id] = {
+                    id: customer.id, // Include ID for sorting/filtering
+                    name: customer.name,
+                    type: customer.type,
+                    balance: 0, // Positive if customer owes you (buyer), Negative if you owe customer (seller)
+                };
+            });
+
+            // Apply transactions to balances
+            transactions.forEach(transaction => {
+                if (balances[transaction.customerId]) {
+                    const totalAmount = parseFloat(transaction.quantity) * parseFloat(transaction.rate);
+                    // The 'type' in transaction object is now 'buy' or 'sell'
+                    if (transaction.type === 'sell') {
+                        balances[transaction.customerId].balance += totalAmount; // Buyer owes you
+                    } else if (transaction.type === 'buy') {
+                        balances[transaction.customerId].balance -= totalAmount; // You owe seller
+                    }
+                }
+            });
+
+            // Apply payments to balances
+            payments.forEach(payment => {
+                if (balances[payment.customerId]) {
+                    const amount = parseFloat(payment.amount);
+                    if (payment.type === 'received_from_buyer') {
+                        balances[payment.customerId].balance -= amount; // Buyer paid you
+                    } else if (payment.type === 'paid_to_seller') {
+                        balances[payment.customerId].balance += amount; // You paid seller
+                    }
+                }
+            });
+
+            return Object.values(balances);
+        }
+
+        // --- Sorting Logic ---
+
+        function sortData(data, sortConfig) {
+            if (!sortConfig.column) return data;
+
+            return [...data].sort((a, b) => {
+                let valA = a[sortConfig.column];
+                let valB = b[sortConfig.column];
+
+                // Special handling for customer name/type in augmented data
+                if (sortConfig.column === 'customerName') {
+                    const customerA = customers.find(c => c.id === a.customerId);
+                    const customerB = customers.find(c => c.id === b.customerId);
+                    valA = customerA ? customerA.name : '';
+                    valB = customerB ? customerB.name : '';
+                } else if (sortConfig.column === 'customerTypeDisplay') {
+                    const customerA = customers.find(c => c.id === a.customerId);
+                    const customerB = customers.find(c => c.id === b.customerId);
+                    valA = customerA ? (customerA.type === 'seller' ? 'Seller' : 'Buyer') : '';
+                    valB = customerB ? (customerB.type === 'seller' ? 'Seller' : 'Buyer') : '';
+                }
+
+                // Ensure values are strings for date/id comparison
+                if (sortConfig.column === 'date' || sortConfig.column === 'id') {
+                    valA = String(valA);
+                    valB = String(valB);
+                } else if (typeof valA === 'string' && typeof valB === 'string') {
+                    // For other string columns, convert to lowercase for case-insensitive sort
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+
+                let comparisonResult = 0;
+                if (valA < valB) {
+                    comparisonResult = -1;
+                } else if (valA > valB) {
+                    comparisonResult = 1;
+                }
+
+                // Apply direction
+                if (sortConfig.direction === 'desc') {
+                    comparisonResult *= -1; // Reverse the order for descending
+                }
+
+                // Secondary sort for transactions and payments by ID if primary (date) is equal
+                // This ensures "newest on top" even for entries on the same date
+                if ((sortConfig.column === 'date' || sortConfig.column === 'id') && comparisonResult === 0) {
+                    const idA = String(a.id);
+                    const idB = String(b.id);
+                    // For descending, a larger (newer) ID should come first
+                    if (idA < idB) {
+                        return 1;
+                    } else if (idA > idB) {
+                        return -1;
+                    }
+                }
+
+                return comparisonResult;
+            });
+        }
+
+
+        function updateSortHeaders(tableId, currentSortConfig) {
+            const headers = document.querySelectorAll(`#${tableId} thead th.sortable-header`);
+            headers.forEach(header => {
+                header.classList.remove('asc', 'desc');
+                if (header.dataset.sortColumn === currentSortConfig.column) {
+                    header.classList.add(currentSortConfig.direction);
+                }
+            });
+        }
+
+        function handleSortClick(event, sortConfigRef, renderFunction, pageStateObject) {
+            const column = event.currentTarget.dataset.sortColumn;
+            if (!column) return;
+
+            if (sortConfigRef.column === column) {
+                sortConfigRef.direction = sortConfigRef.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortConfigRef.column = column;
+                sortConfigRef.direction = 'asc';
+            }
+            pageStateObject.currentPage = 1; // Reset to first page on sort change
+            renderFunction();
+        }
+
+        // --- Pagination Logic ---
+        function renderPagination(totalItems, currentPage, paginationContainerId, renderFunction, pageStateObject) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const paginationContainer = document.getElementById(paginationContainerId);
+            const entryCountSpan = paginationContainer.querySelector('span'); // Get the span for entry count
+
+            // Clear previous pagination buttons, but keep the entry count span
+            const existingButtons = paginationContainer.querySelectorAll('button');
+            existingButtons.forEach(button => button.remove());
+
+            if (totalPages <= 1) {
+                // If only one page or less, just display count and no buttons
+                entryCountSpan.textContent = `Total Entries: ${totalItems}`;
+                return;
+            }
+
+            // Add pagination buttons to the container
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-blue-200'}`;
+                button.addEventListener('click', () => {
+                    pageStateObject.currentPage = i; // Now updates the actual currentPage property in the state object
+                    renderFunction();
+                });
+                paginationContainer.appendChild(button);
+            }
+            entryCountSpan.textContent = `Total Entries: ${totalItems}`; // Update total entries count
+        }
+
+
+        // --- Render Functions ---
+
+        function renderDashboard() {
+            let allBalances = calculateBalances(); // Get all balances first
+
+            // Calculate total owed/you owe based on ALL balances (or filtered by date)
+            let totalOwedToYou = 0;
+            let totalYouOwe = 0;
+
+            let balancesForTotals = allBalances;
+            // Only apply date filter to totals if date range is present
+            if (dashboardDateRange.start || dashboardDateRange.end) {
+                 // Filter transactions and payments by date range
+                const startDate = dashboardDateRange.start ? new Date(dashboardDateRange.start + 'T00:00:00') : null;
+                const endDate = dashboardDateRange.end ? new Date(dashboardDateRange.end + 'T23:59:59') : null;
+
+                const filteredTransactionsForTotals = transactions.filter(t => {
+                    const transactionDate = new Date(t.date + 'T00:00:00');
+                    return (!startDate || transactionDate >= startDate) && (!endDate || transactionDate <= endDate);
+                });
+
+                const filteredPaymentsForTotals = payments.filter(p => {
+                    const paymentDate = new Date(p.date + 'T00:00:00');
+                    return (!startDate || paymentDate >= startDate) && (!endDate || paymentDate <= endDate);
+                });
+
+                // Recalculate balances based on filtered transactions and payments
+                const filteredBalancesMap = {};
+                customers.forEach(customer => {
+                    filteredBalancesMap[customer.id] = {
+                        id: customer.id,
+                        name: customer.name,
+                        type: customer.type,
+                        balance: 0,
+                    };
+                });
+
+                filteredTransactionsForTotals.forEach(transaction => {
+                    if (filteredBalancesMap[transaction.customerId]) {
+                        const totalAmount = parseFloat(transaction.quantity) * parseFloat(transaction.rate);
+                        if (transaction.type === 'sell') {
+                            filteredBalancesMap[transaction.customerId].balance += totalAmount;
+                        } else if (transaction.type === 'buy') {
+                            filteredBalancesMap[transaction.customerId].balance -= totalAmount;
+                        }
+                    }
+                });
+
+                filteredPaymentsForTotals.forEach(payment => {
+                    if (filteredBalancesMap[payment.customerId]) {
+                        const amount = parseFloat(payment.amount);
+                        if (payment.type === 'received_from_buyer') {
+                            filteredBalancesMap[payment.customerId].balance -= amount;
+                        } else if (payment.type === 'paid_to_seller') {
+                            filteredBalancesMap[payment.customerId].balance += amount;
+                        }
+                    }
+                });
+                balancesForTotals = Object.values(filteredBalancesMap);
+            }
+
+
+            balancesForTotals.forEach(cb => {
+                if (cb.balance < 0) {
+                    totalYouOwe += Math.abs(cb.balance);
+                } else if (cb.balance > 0) {
+                    totalOwedToYou += cb.balance;
+                }
+            });
+
+            document.getElementById('totalOwedToYou').textContent = formatCurrency(totalOwedToYou);
+            document.getElementById('totalYouOwe').textContent = formatCurrency(totalYouOwe);
+
+
+            // Now, filter and sort for the table display
+            // The table should still filter by the dashboard date range and search term
+            let filteredBalancesForTable = filterData(allBalances, dashboardSearchTerm, ['name', 'type', 'balance'], dashboardDateRange, true);
+            let sortedBalancesForTable = sortData(filteredBalancesForTable, dashboardSortConfig);
+
+            const startIndex = (dashboardPaginationState.currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedBalances = sortedBalancesForTable.slice(startIndex, endIndex);
+
+            const dashboardBalancesTableBody = document.getElementById('dashboardBalancesTableBody');
+            dashboardBalancesTableBody.innerHTML = ''; // Clear previous rows
+
+
+            paginatedBalances.forEach(cb => {
+                const row = dashboardBalancesTableBody.insertRow();
+                row.className = 'hover:bg-gray-50';
+
+                const nameCell = row.insertCell();
+                nameCell.className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
+                nameCell.textContent = cb.name;
+
+                const typeCell = row.insertCell();
+                typeCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                typeCell.textContent = cb.type === 'seller' ? 'Seller' : 'Buyer';
+
+                const balanceCell = row.insertCell();
+                balanceCell.className = `px-6 py-4 whitespace-nowrap text-sm font-semibold ${cb.balance > 0 ? 'text-green-600' : (cb.balance < 0 ? 'text-red-600' : 'text-gray-600')}`;
+                balanceCell.textContent = formatCurrency(Math.abs(cb.balance));
+                if (cb.balance < 0) {
+                    balanceCell.textContent += ' (You owe)';
+                } else if (cb.balance > 0) {
+                    balanceCell.textContent += ' (Owed to you)';
+                }
+            });
+
+
+            updateSortHeaders('dashboardSection', dashboardSortConfig);
+            renderPagination(sortedBalancesForTable.length, dashboardPaginationState.currentPage, 'dashboardPagination', renderDashboard, dashboardPaginationState);
+        }
+
+        function renderCustomers() {
+            let filteredCustomers = filterData(customers, customerSearchTerm, ['name', 'type', 'phone', 'defaultQuantity', 'defaultRate', 'defaultMilkType'], customerDateRange, true); // Filter by activity
+            let sortedCustomers = sortData(filteredCustomers, customerSortConfig);
+
+            const startIndex = (customerPaginationState.currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedCustomers = sortedCustomers.slice(startIndex, endIndex);
+
+            const customersTableBody = document.getElementById('customersTableBody');
+            customersTableBody.innerHTML = ''; // Clear previous rows
+
+            paginatedCustomers.forEach(customer => {
+                const row = customersTableBody.insertRow();
+                row.className = 'hover:bg-gray-50';
+
+                const nameCell = row.insertCell();
+                nameCell.className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
+                nameCell.textContent = customer.name;
+
+                const typeCell = row.insertCell();
+                typeCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                typeCell.textContent = customer.type === 'seller' ? 'Seller' : 'Buyer';
+
+                const phoneCell = row.insertCell();
+                phoneCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                phoneCell.textContent = customer.phone || 'N/A';
+
+                // New cells for default transaction values
+                const defaultQuantityCell = row.insertCell();
+                defaultQuantityCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                defaultQuantityCell.textContent = customer.defaultQuantity !== undefined ? parseFloat(customer.defaultQuantity).toFixed(2) : 'N/A';
+
+                const defaultRateCell = row.insertCell();
+                defaultRateCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                defaultRateCell.textContent = customer.defaultRate !== undefined ? formatCurrency(parseFloat(customer.defaultRate)) : 'N/A';
+
+                const defaultMilkTypeCell = row.insertCell();
+                defaultMilkTypeCell.className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                defaultMilkTypeCell.textContent = customer.defaultMilkType || 'N/A';
+
+
+                const actionsCell = row.insertCell();
+                actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.className = 'text-blue-600 hover:text-blue-900 mr-3';
+                editButton.onclick = () => editCustomer(customer.id);
+                actionsCell.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'text-red-600 hover:text-red-900';
+                deleteButton.onclick = () => deleteCustomer(customer.id);
+                actionsCell.appendChild(deleteButton);
+            });
+
+            updateSortHeaders('customersSection', customerSortConfig);
+            renderPagination(sortedCustomers.length, customerPaginationState.currentPage, 'customersPagination', renderCustomers, customerPaginationState);
+        }
+
+        function renderTransactions() {
+            // Augment transactions with customer data for filtering/sorting
+            const augmentedTransactions = transactions.map(t => {
+                const customer = customers.find(c => c.id === t.customerId);
+                return {
+                    ...t,
+                    customerName: customer ? customer.name : 'Unknown',
+                    customerTypeDisplay: customer ? (customer.type === 'seller' ? 'Seller' : 'Buyer') : 'N/A',
+                    totalAmount: parseFloat(t.quantity) * parseFloat(t.rate)
+                };
+            });
+
+            console.log('Transactions before sort:', JSON.parse(JSON.stringify(augmentedTransactions))); // Deep copy for logging
+            let filteredTransactions = filterData(augmentedTransactions, transactionSearchTerm, ['date', 'customerName', 'customerTypeDisplay', 'quantity', 'rate', 'milkType', 'shift', 'totalAmount'], transactionDateRange);
+            let sortedTransactions = sortData(filteredTransactions, transactionSortConfig);
+            console.log('Transactions after sort:', JSON.parse(JSON.stringify(sortedTransactions))); // Deep copy for logging
+
+            // Calculate totals for summary row
+            let totalBuffaloQuantity = 0;
+            let totalBuffaloAmount = 0;
+            let totalCowQuantity = 0;
+            let totalCowAmount = 0;
+
+            filteredTransactions.forEach(t => {
+                if (t.milkType === 'Buffalo') {
+                    totalBuffaloQuantity += parseFloat(t.quantity);
+                    totalBuffaloAmount += parseFloat(t.totalAmount);
+                } else if (t.milkType === 'Cow') {
+                    totalCowQuantity += parseFloat(t.quantity);
+                    totalCowAmount += parseFloat(t.totalAmount);
+                }
+            });
+
+
+            const startIndex = (transactionPaginationState.currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedTransactions = sortedTransactions.slice(startIndex, endIndex);
+
+            const transactionsTableBody = document.getElementById('transactionsTableBody');
+            transactionsTableBody.innerHTML = ''; // Clear previous rows
+
+            paginatedTransactions.forEach(transaction => {
+                const row = transactionsTableBody.insertRow();
+                row.className = 'hover:bg-gray-50';
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Date
+                row.cells[0].textContent = formatDate(transaction.date);
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'; // Customer Name
+                row.cells[1].textContent = transaction.customerName;
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Customer Type (formerly Transaction Type)
+                row.cells[2].textContent = transaction.customerTypeDisplay; // Display customer type here
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Quantity
+                row.cells[3].textContent = parseFloat(transaction.quantity).toFixed(2);
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Rate
+                row.cells[4].textContent = formatCurrency(parseFloat(transaction.rate));
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Milk Type
+                row.cells[5].textContent = transaction.milkType || 'N/A';
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Shift
+                row.cells[6].textContent = transaction.shift || 'N/A';
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-semibold'; // Total Amount
+                row.cells[7].textContent = formatCurrency(transaction.totalAmount);
+
+                const actionsCell = row.insertCell();
+                actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'text-red-600 hover:text-red-900';
+                deleteButton.onclick = () => deleteTransaction(transaction.id);
+                actionsCell.appendChild(deleteButton);
+            });
+
+            // Add summary row for Buffalo Milk
+            const buffaloSummaryRow = transactionsTableBody.insertRow();
+            buffaloSummaryRow.className = 'bg-blue-50 font-bold';
+            buffaloSummaryRow.insertCell().colSpan = 3; // Span across first 3 columns
+            buffaloSummaryRow.cells[0].className = 'px-6 py-3 text-right text-sm text-blue-800';
+            buffaloSummaryRow.cells[0].textContent = 'Total Buffalo Milk:';
+            buffaloSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-blue-800';
+            buffaloSummaryRow.cells[1].textContent = totalBuffaloQuantity.toFixed(2) + ' L';
+            buffaloSummaryRow.insertCell().colSpan = 3; // Span across rate, milk type, shift
+            buffaloSummaryRow.cells[2].className = 'px-6 py-3'; // Empty cell for alignment
+            buffaloSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-blue-800';
+            buffaloSummaryRow.cells[3].textContent = formatCurrency(totalBuffaloAmount);
+            buffaloSummaryRow.insertCell().className = 'px-6 py-3'; // Empty cell for actions
+
+            // Add summary row for Cow Milk
+            const cowSummaryRow = transactionsTableBody.insertRow();
+            cowSummaryRow.className = 'bg-green-50 font-bold';
+            cowSummaryRow.insertCell().colSpan = 3; // Span across first 3 columns
+            cowSummaryRow.cells[0].className = 'px-6 py-3 text-right text-sm text-green-800';
+            cowSummaryRow.cells[0].textContent = 'Total Cow Milk:';
+            cowSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-green-800';
+            cowSummaryRow.cells[1].textContent = totalCowQuantity.toFixed(2) + ' L';
+            cowSummaryRow.insertCell().colSpan = 3; // Span across rate, milk type, shift
+            cowSummaryRow.cells[2].className = 'px-6 py-3'; // Empty cell for alignment
+            cowSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-green-800';
+            cowSummaryRow.cells[3].textContent = formatCurrency(totalCowAmount);
+            cowSummaryRow.insertCell().className = 'px-6 py-3'; // Empty cell for actions
+
+
+            updateSortHeaders('transactionsSection', transactionSortConfig);
+            renderPagination(sortedTransactions.length, transactionPaginationState.currentPage, 'transactionsPagination', renderTransactions, transactionPaginationState);
+        }
+
+        function renderPayments() {
+            // Augment payments with customer data for filtering/sorting
+            const augmentedPayments = payments.map(p => {
+                const customer = customers.find(c => c.id === p.customerId);
+                return {
+                    ...p,
+                    customerName: customer ? customer.name : 'Unknown',
+                    // 'type' is already in payments as 'paid_to_seller'/'received_from_buyer'
+                };
+            });
+
+            console.log('Payments before sort:', JSON.parse(JSON.stringify(augmentedPayments))); // Deep copy for logging
+            let filteredPayments = filterData(augmentedPayments, paymentSearchTerm, ['date', 'customerName', 'type', 'amount'], paymentDateRange);
+            let sortedPayments = sortData(filteredPayments, paymentSortConfig);
+            console.log('Payments after sort:', JSON.parse(JSON.stringify(sortedPayments))); // Deep copy for logging
+
+            const startIndex = (paymentPaginationState.currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedPayments = sortedPayments.slice(startIndex, endIndex);
+
+            const paymentsTableBody = document.getElementById('paymentsTableBody');
+            paymentsTableBody.innerHTML = ''; // Clear previous rows
+
+            paginatedPayments.forEach(payment => {
+                const row = paymentsTableBody.insertRow();
+                row.className = 'hover:bg-gray-50';
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                row.cells[0].textContent = formatDate(payment.date);
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
+                row.cells[1].textContent = payment.customerName;
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
+                row.cells[2].textContent = payment.type === 'paid_to_seller' ? 'Paid to Seller' : 'Received from Buyer';
+
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-semibold';
+                row.cells[3].textContent = formatCurrency(parseFloat(payment.amount));
+
+                const actionsCell = row.insertCell();
+                actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'text-red-600 hover:text-red-900';
+                deleteButton.onclick = () => deletePayment(payment.id);
+                actionsCell.appendChild(deleteButton);
+            });
+            updateSortHeaders('paymentsSection', paymentSortConfig);
+            renderPagination(sortedPayments.length, paymentPaginationState.currentPage, 'paymentsPagination', renderPayments, paymentPaginationState);
+        }
+
+        // Master render function to update all sections
+        function renderAllData() {
+            renderCustomers();
+            renderTransactions();
+            renderPayments();
+            renderDashboard();
+        }
+
+        // --- Form Handling & CRUD Operations ---
+
+        // Customer Form
+        const customerForm = document.getElementById('customerForm');
+        customerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('customerId').value;
+            const name = document.getElementById('customerName').value.trim();
+            const type = document.getElementById('customerType').value;
+            const phone = document.getElementById('customerPhone').value.trim();
+            const defaultQuantity = parseFloat(document.getElementById('defaultQuantity').value);
+            const defaultRate = parseFloat(document.getElementById('defaultRate').value);
+            const defaultMilkType = document.getElementById('defaultMilkType').value;
+
+
+            if (!name || !type) {
+                showModal('Input Error', 'Customer Name and Type are required.', () => {});
+                return;
+            }
+
+            if (id) {
+                // Update existing customer
+                const index = customers.findIndex(c => c.id === id);
+                if (index !== -1) {
+                    customers[index] = { ...customers[index], name, type, phone, defaultQuantity, defaultRate, defaultMilkType };
+                }
+            } else {
+                // Add new customer
+                customers.push({ id: generateId(), name, type, phone, defaultQuantity, defaultRate, defaultMilkType });
+            }
+            customerForm.reset();
+            document.getElementById('customerId').value = ''; // Clear hidden ID
+            saveData(); // Save data to localStorage after changes
+            customerPaginationState.currentPage = 1; // Reset to first page after adding/updating
+            renderAllData();
+        });
+
+        function editCustomer(id) {
+            const customer = customers.find(c => c.id === id);
+            if (customer) {
+                document.getElementById('customerId').value = customer.id;
+                document.getElementById('customerName').value = customer.name;
+                document.getElementById('customerType').value = customer.type;
+                document.getElementById('customerPhone').value = customer.phone;
+                document.getElementById('defaultQuantity').value = customer.defaultQuantity !== undefined ? customer.defaultQuantity : 0;
+                document.getElementById('defaultRate').value = customer.defaultRate !== undefined ? customer.defaultRate : 0;
+                document.getElementById('defaultMilkType').value = customer.defaultMilkType || '';
+            }
+        }
+
+        function deleteCustomer(id) {
+            showModal(
+                'Confirm Deletion',
+                'Are you sure you want to delete this customer? All associated transactions and payments will also be removed.',
+                () => {
+                    customers = customers.filter(c => c.id !== id);
+                    transactions = transactions.filter(t => t.customerId !== id);
+                    payments = payments.filter(p => p.customerId !== id);
+                    saveData(); // Save data to localStorage after changes
+                    customerPaginationState.currentPage = 1; // Reset to first page after deletion
+                    renderAllData();
+                }
+            );
+        }
+
+        // Transaction Form
+        const transactionForm = document.getElementById('transactionForm');
+        const transactionCustomerSearchInput = document.getElementById('transactionCustomerSearch'); // New search input
+        const transactionCustomerIdHidden = document.getElementById('transactionCustomerId'); // Hidden ID field
+        const customerSearchResultsDiv = document.getElementById('customerSearchResults'); // Div for search results
+        const selectedCustomerTypeDisplay = document.getElementById('selectedCustomerTypeDisplay');
+        const transactionQuantityInput = document.getElementById('transactionQuantity');
+        const transactionRateInput = document.getElementById('transactionRate');
+        const milkTypeSelect = document.getElementById('milkType'); // Milk type select
+        const shiftSelect = document.getElementById('shift'); // Shift select
+        const transactionDateInput = document.getElementById('transactionDate'); // Date input field
+
+        // Event listener for customer search input
+        transactionCustomerSearchInput.addEventListener('input', () => {
+            const searchTerm = transactionCustomerSearchInput.value.toLowerCase();
+            customerSearchResultsDiv.innerHTML = ''; // Clear previous results
+            transactionCustomerIdHidden.value = ''; // Clear selected ID
+            selectedCustomerTypeDisplay.value = ''; // Clear displayed type
+            // Clear transaction form fields when search changes
+            transactionQuantityInput.value = '';
+            transactionRateInput.value = '';
+            milkTypeSelect.value = '';
+
+
+            if (searchTerm.length > 0) {
+                const filteredCustomers = customers.filter(customer =>
+                    customer.name.toLowerCase().includes(searchTerm)
+                );
+
+                if (filteredCustomers.length > 0) {
+                    customerSearchResultsDiv.classList.remove('hidden');
+                    filteredCustomers.forEach(customer => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'px-3 py-2 cursor-pointer hover:bg-blue-100 rounded-md';
+                        resultItem.textContent = `${customer.name} (${customer.type === 'seller' ? 'Seller' : 'Buyer'})`;
+                        resultItem.dataset.customerId = customer.id;
+                        resultItem.dataset.customerType = customer.type;
+
+                        resultItem.addEventListener('click', () => {
+                            transactionCustomerSearchInput.value = customer.name;
+                            transactionCustomerIdHidden.value = customer.id;
+                            selectedCustomerTypeDisplay.value = customer.type === 'seller' ? 'Seller' : 'Buyer';
+                            customerSearchResultsDiv.classList.add('hidden'); // Hide results after selection
+
+                            // Populate transaction form with default values
+                            transactionQuantityInput.value = customer.defaultQuantity !== undefined ? customer.defaultQuantity : '';
+                            transactionRateInput.value = customer.defaultRate !== undefined ? customer.defaultRate : '';
+                            milkTypeSelect.value = customer.defaultMilkType || '';
+                        });
+                        customerSearchResultsDiv.appendChild(resultItem);
+                    });
+                } else {
+                    customerSearchResultsDiv.classList.add('hidden');
+                }
+            } else {
+                customerSearchResultsDiv.classList.add('hidden');
+            }
+        });
+
+        // Hide search results when input loses focus (with a slight delay to allow click)
+        transactionCustomerSearchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                customerSearchResultsDiv.classList.add('hidden');
+            }, 150); // Small delay
+        });
+
+        transactionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const customerId = transactionCustomerIdHidden.value; // Get ID from hidden field
+            const selectedCustomer = customers.find(c => c.id === customerId);
+
+            if (!selectedCustomer) {
+                showModal('Input Error', 'Please select a valid customer from the search suggestions.', () => {});
+                return;
+            }
+
+            // Determine transaction type based on customer type
+            const transactionType = selectedCustomer.type === 'seller' ? 'buy' : 'sell';
+
+            const quantity = parseFloat(transactionQuantityInput.value);
+            const rate = parseFloat(transactionRateInput.value);
+            const milkType = milkTypeSelect.value;
+            const shift = shiftSelect.value;
+            let date = transactionDateInput.value;
+
+            // If date is empty, set it to current date
+            if (!date) {
+                const today = new Date();
+                date = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            }
+
+            if (isNaN(quantity) || isNaN(rate) || !milkType || !shift) {
+                showModal('Input Error', 'Quantity, Rate, Milk Type, and Shift are required and must be valid numbers/selections.', () => {});
+                return;
+            }
+
+            transactions.push({
+                id: generateId(),
+                customerId,
+                type: transactionType,
+                quantity,
+                rate,
+                milkType,
+                shift,
+                date
+            });
+            transactionForm.reset();
+            transactionCustomerSearchInput.value = ''; // Clear search input
+            transactionCustomerIdHidden.value = ''; // Clear hidden ID
+            selectedCustomerTypeDisplay.value = ''; // Clear display field
+            saveData(); // Save data to localStorage after changes
+            transactionPaginationState.currentPage = 1; // Reset to first page after adding
+            renderAllData();
+        });
+
+        function deleteTransaction(id) {
+            showModal(
+                'Confirm Deletion',
+                'Are you sure you want to delete this transaction record?',
+                () => {
+                    transactions = transactions.filter(t => t.id !== id);
+                    saveData(); // Save data to localStorage after changes
+                    transactionPaginationState.currentPage = 1; // Reset to first page after deletion
+                    renderAllData();
+                }
+            );
+        }
+
+        // Payment Form
+        const paymentForm = document.getElementById('paymentForm');
+        const paymentCustomerSearchInput = document.getElementById('paymentCustomerSearch'); // New search input for payments
+        const paymentCustomerIdHidden = document.getElementById('paymentCustomerId'); // Hidden ID field for payments
+        const paymentCustomerSearchResultsDiv = document.getElementById('paymentCustomerSearchResults'); // Div for search results for payments
+        const paymentSelectedCustomerTypeDisplay = document.getElementById('paymentSelectedCustomerTypeDisplay'); // Display for selected customer type for payments
+        const paymentDateInput = document.getElementById('paymentDate'); // Get the date input field
+
+        // Event listener for payments customer search input
+        paymentCustomerSearchInput.addEventListener('input', () => {
+            const searchTerm = paymentCustomerSearchInput.value.toLowerCase();
+            paymentCustomerSearchResultsDiv.innerHTML = ''; // Clear previous results
+            paymentCustomerIdHidden.value = ''; // Clear selected ID
+            paymentSelectedCustomerTypeDisplay.value = ''; // Clear displayed type
+
+            if (searchTerm.length > 0) {
+                const filteredCustomers = customers.filter(customer =>
+                    customer.name.toLowerCase().includes(searchTerm)
+                );
+
+                if (filteredCustomers.length > 0) {
+                    paymentCustomerSearchResultsDiv.classList.remove('hidden');
+                    filteredCustomers.forEach(customer => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'px-3 py-2 cursor-pointer hover:bg-blue-100 rounded-md';
+                        resultItem.textContent = `${customer.name} (${customer.type === 'seller' ? 'Seller' : 'Buyer'})`;
+                        resultItem.dataset.customerId = customer.id;
+                        resultItem.dataset.customerType = customer.type;
+
+                        resultItem.addEventListener('click', () => {
+                            paymentCustomerSearchInput.value = customer.name;
+                            paymentCustomerIdHidden.value = customer.id;
+                            paymentSelectedCustomerTypeDisplay.value = customer.type === 'seller' ? 'Seller' : 'Buyer';
+                            paymentCustomerSearchResultsDiv.classList.add('hidden'); // Hide results after selection
+                        });
+                        paymentCustomerSearchResultsDiv.appendChild(resultItem);
+                    });
+                } else {
+                    paymentCustomerSearchResultsDiv.classList.add('hidden');
+                }
+            } else {
+                paymentCustomerSearchResultsDiv.classList.add('hidden');
+            }
+        });
+
+        // Hide search results when input loses focus (with a slight delay to allow click)
+        paymentCustomerSearchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                paymentCustomerSearchResultsDiv.classList.add('hidden');
+            }, 150); // Small delay
+        });
+
+        paymentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const customerId = paymentCustomerIdHidden.value; // Get ID from hidden field
+            const selectedCustomer = customers.find(c => c.id === customerId);
+
+            if (!selectedCustomer) {
+                showModal('Input Error', 'Please select a valid customer from the search suggestions.', () => {});
+                return;
+            }
+
+            const type = document.getElementById('paymentType').value;
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            let date = paymentDateInput.value; // Get the date value
+
+            // If date is empty, set it to current date
+            if (!date) {
+                const today = new Date();
+                date = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            }
+
+            if (!customerId || !type || isNaN(amount)) {
+                showModal('Input Error', 'Customer, Payment Type, and Amount are required and must be valid numbers.', () => {});
+                return;
+            }
+
+            payments.push({
+                id: generateId(),
+                customerId,
+                type,
+                amount,
+                date
+            });
+            paymentForm.reset();
+            paymentCustomerSearchInput.value = ''; // Clear search input
+            paymentCustomerIdHidden.value = ''; // Clear hidden ID
+            paymentSelectedCustomerTypeDisplay.value = ''; // Clear display field
+            saveData(); // Save data to localStorage after changes
+            paymentPaginationState.currentPage = 1; // Reset to first page after adding
+            renderAllData();
+        });
+
+        function deletePayment(id) {
+            showModal(
+                'Confirm Deletion',
+                'Are you sure you want to delete this payment record?',
+                () => {
+                    payments = payments.filter(p => p.id !== id);
+                    saveData(); // Save data to localStorage after changes
+                    paymentPaginationState.currentPage = 1; // Reset to first page after deletion
+                    renderAllData();
+                }
+            );
+        }
+
+        // --- Tab Navigation ---
+        const tabs = {
+            dashboard: { button: document.getElementById('dashboardTab'), section: document.getElementById('dashboardSection') },
+            customers: { button: document.getElementById('customersTab'), section: document.getElementById('customersSection') },
+            transactions: { button: document.getElementById('transactionsTab'), section: document.getElementById('transactionsSection') },
+            payments: { button: document.getElementById('paymentsTab'), section: document.getElementById('paymentsSection') },
+            dataManagement: { button: document.getElementById('dataManagementTab'), section: document.getElementById('dataManagementSection') }, // New tab
+        };
+
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mainNav = document.getElementById('mainNav');
+
+        // Toggle mobile menu visibility
+        hamburgerBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('mobile-menu-open');
+            mainNav.classList.toggle('mobile-menu-closed');
+        });
+
+
+        function setActiveTab(activeTabId) {
+            for (const tabId in tabs) {
+                const tab = tabs[tabId];
+                // Remove all specific active/inactive classes first to reset state
+                tab.button.classList.remove('bg-white', 'text-blue-800', 'text-white');
+
+                if (tabId === activeTabId) {
+                    tab.button.classList.add('bg-white', 'text-blue-800'); // New active background and text color
+                    tab.section.classList.remove('hidden');
+                } else {
+                    tab.button.classList.add('text-white'); // Ensure inactive tabs have white text (from header default)
+                    tab.section.classList.add('hidden');
+                }
+            }
+            // Close mobile menu after selecting a tab if on small screen
+            if (window.innerWidth < 640) {
+                mainNav.classList.remove('mobile-menu-open'); // Ensure it's closed
+                mainNav.classList.add('mobile-menu-closed'); // Ensure it's hidden
+            }
+            renderAllData(); // Re-render data whenever tab changes
+        }
+
+        for (const tabId in tabs) {
+            tabs[tabId].button.addEventListener('click', () => setActiveTab(tabId));
+        }
+
+        // --- Event Listeners for Sorting and Search ---
+
+        // Dashboard
+        document.getElementById('dashboardSearch').addEventListener('input', (e) => {
+            dashboardSearchTerm = e.target.value;
+            dashboardPaginationState.currentPage = 1; // Reset to first page on search change
+            renderDashboard();
+        });
+        document.getElementById('dashboardStartDate').addEventListener('change', (e) => {
+            dashboardDateRange.start = e.target.value;
+            dashboardPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderDashboard();
+        });
+        document.getElementById('dashboardEndDate').addEventListener('change', (e) => {
+            dashboardDateRange.end = e.target.value;
+            dashboardPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderDashboard();
+        });
+        document.getElementById('dashboardSection').querySelectorAll('th.sortable-header').forEach(header => {
+            header.addEventListener('click', (e) => handleSortClick(e, dashboardSortConfig, renderDashboard, dashboardPaginationState));
+        });
+
+        // Customers
+        document.getElementById('customerSearch').addEventListener('input', (e) => {
+            customerSearchTerm = e.target.value;
+            customerPaginationState.currentPage = 1; // Reset to first page on search change
+            renderCustomers();
+        });
+        document.getElementById('customerStartDate').addEventListener('change', (e) => {
+            customerDateRange.start = e.target.value;
+            customerPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderCustomers();
+        });
+        document.getElementById('customerEndDate').addEventListener('change', (e) => {
+            customerDateRange.end = e.target.value;
+            customerPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderCustomers();
+        });
+        document.getElementById('customersSection').querySelectorAll('th.sortable-header').forEach(header => {
+            header.addEventListener('click', (e) => handleSortClick(e, customerSortConfig, renderCustomers, customerPaginationState));
+        });
+
+        // Transactions
+        document.getElementById('transactionSearch').addEventListener('input', (e) => {
+            transactionSearchTerm = e.target.value;
+            transactionPaginationState.currentPage = 1; // Reset to first page on search change
+            renderTransactions();
+        });
+        document.getElementById('transactionStartDate').addEventListener('change', (e) => {
+            transactionDateRange.start = e.target.value;
+            transactionPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderTransactions();
+        });
+        document.getElementById('transactionEndDate').addEventListener('change', (e) => {
+            transactionDateRange.end = e.target.value;
+            transactionPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderTransactions();
+        });
+        document.getElementById('transactionsSection').querySelectorAll('th.sortable-header').forEach(header => {
+            header.addEventListener('click', (e) => handleSortClick(e, transactionSortConfig, renderTransactions, transactionPaginationState));
+        });
+
+        // Payments
+        document.getElementById('paymentSearch').addEventListener('input', (e) => {
+            paymentSearchTerm = e.target.value;
+            paymentPaginationState.currentPage = 1; // Reset to first page on search change
+            renderPayments();
+        });
+        document.getElementById('paymentStartDate').addEventListener('change', (e) => {
+            paymentDateRange.start = e.target.value;
+            paymentPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderPayments();
+        });
+        document.getElementById('paymentEndDate').addEventListener('change', (e) => {
+            paymentDateRange.end = e.target.value;
+            paymentPaginationState.currentPage = 1; // Reset to first page on date filter change
+            renderPayments();
+        });
+        document.getElementById('paymentsSection').querySelectorAll('th.sortable-header').forEach(header => {
+            header.addEventListener('click', (e) => handleSortClick(e, paymentSortConfig, renderPayments, paymentPaginationState));
+        });
+
+        // --- Missing Transactions Feature Logic ---
+        const missingTransactionDateInput = document.getElementById('missingTransactionDate');
+        const checkMissingTransactionsBtn = document.getElementById('checkMissingTransactionsBtn');
+        const missingTransactionsResultsDiv = document.getElementById('missingTransactionsResults');
+
+        function findCustomersWithNoTransactionsOnDate(checkDateString) {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(checkDateString)) {
+                return []; // Return empty if date format is incorrect
+            }
+
+            const targetDate = checkDateString;
+
+            const customersWithTransactionsOnDate = new Set();
+            transactions.forEach(transaction => {
+                if (transaction.date === targetDate) {
+                    customersWithTransactionsOnDate.add(transaction.customerId);
+                }
+            });
+
+            const customersWithoutTransactions = customers.filter(customer =>
+                !customersWithTransactionsOnDate.has(customer.id)
+            );
+
+            return customersWithoutTransactions;
+        }
+
+        function displayMissingTransactions() {
+            const dateToCheck = missingTransactionDateInput.value;
+            missingTransactionsResultsDiv.innerHTML = ''; // Clear previous results
+
+            if (!dateToCheck) {
+                missingTransactionsResultsDiv.innerHTML = '<p class="text-gray-500 text-sm">Please select a date to check.</p>';
+                return;
+            }
+
+            const missingCustomers = findCustomersWithNoTransactionsOnDate(dateToCheck);
+
+            if (missingCustomers.length > 0) {
+                const ul = document.createElement('ul');
+                ul.className = 'list-disc list-inside space-y-1 text-gray-800';
+                missingCustomers.forEach(customer => {
+                    const li = document.createElement('li');
+                    li.textContent = `${customer.name} (Type: ${customer.type === 'seller' ? 'Seller' : 'Buyer'}, Phone: ${customer.phone || 'N/A'})`;
+                    ul.appendChild(li);
+                });
+                missingTransactionsResultsDiv.appendChild(ul);
+            } else {
+                missingTransactionsResultsDiv.innerHTML = `<p class="text-green-600 font-medium">All customers have at least one transaction on ${formatDate(dateToCheck)}.</p>`;
+            }
+        }
+
+        checkMissingTransactionsBtn.addEventListener('click', displayMissingTransactions);
+
+        // Set default date for missing transaction check to today
+        function setInitialMissingTransactionDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(today.getDate()).padStart(2, '0');
+            missingTransactionDateInput.value = `${year}-${month}-${day}`;
+        }
+
+
+        // --- JSON File Management Event Listeners (now attached to elements in dataManagementSection) ---
+        // These elements are now within the dataManagementSection, so their IDs are unique.
+        document.getElementById('exportDataBtn').addEventListener('click', exportDataToJson);
+        document.getElementById('importDataBtn').addEventListener('click', () => {
+            document.getElementById('importFileInput').click(); // Trigger file input click
+        });
+        document.getElementById('importFileInput').addEventListener('change', importDataFromJson);
+
+
+        // --- Initialization ---
+        window.onload = function() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+            // Check for localStorage support
+            if (typeof(Storage) === "undefined") {
+                showModal('Browser Error', 'Your browser does not support local storage. Data persistence will not work.', () => {});
+            }
+
+            loadData(); // Load initial data from localStorage
+            setActiveTab('dashboard'); // Set initial active tab
+            setInitialMissingTransactionDate(); // Set default date for missing transactions
+        };
+    </script>
+</body>
+</html>
