@@ -1,0 +1,568 @@
+{
+  "customers": [
+    {
+      "id": "cust001",
+      "name": "Rajesh Kumar",
+      "type": "buyer",
+      "phone": "9876543210",
+      "defaultQuantity": 5.0,
+      "defaultRate": 55.0,
+      "defaultMilkType": "Cow"
+    },
+    {
+      "id": "cust002",
+      "name": "Priya Sharma",
+      "type": "seller",
+      "phone": "9988776655",
+      "defaultQuantity": 8.0,
+      "defaultRate": 48.0,
+      "defaultMilkType": "Buffalo"
+    },
+    {
+      "id": "cust003",
+      "name": "Amit Singh",
+      "type": "buyer",
+      "phone": "9123456789",
+      "defaultQuantity": 3.5,
+      "defaultRate": 60.0,
+      "defaultMilkType": "Cow"
+    },
+    {
+      "id": "cust004",
+      "name": "Sonia Devi",
+      "type": "seller",
+      "phone": "9765432109",
+      "defaultQuantity": 10.0,
+      "defaultRate": 45.0,
+      "defaultMilkType": "Buffalo"
+    },
+    {
+      "id": "cust005",
+      "name": "Vikram Patel",
+      "type": "buyer",
+      "phone": "9345678901",
+      "defaultQuantity": 6.0,
+      "defaultRate": 58.0,
+      "defaultMilkType": "Cow"
+    },
+    {
+      "id": "cust006",
+      "name": "Geeta Rao",
+      "type": "seller",
+      "phone": "9234567890",
+      "defaultQuantity": 7.5,
+      "defaultRate": 47.0,
+      "defaultMilkType": "Cow"
+    },
+    {
+      "id": "cust007",
+      "name": "Suresh Reddy",
+      "type": "buyer",
+      "phone": "9012345678",
+      "defaultQuantity": 4.0,
+      "defaultRate": 56.0,
+      "defaultMilkType": "Buffalo"
+    },
+    {
+      "id": "cust008",
+      "name": "Anjali Gupta",
+      "type": "seller",
+      "phone": "9567890123",
+      "defaultQuantity": 9.0,
+      "defaultRate": 49.0,
+      "defaultMilkType": "Buffalo"
+    },
+    {
+      "id": "cust009",
+      "name": "Ravi Shankar",
+      "type": "buyer",
+      "phone": "9432109876",
+      "defaultQuantity": 2.5,
+      "defaultRate": 62.0,
+      "defaultMilkType": "Cow"
+    },
+    {
+      "id": "cust010",
+      "name": "Deepa Menon",
+      "type": "seller",
+      "phone": "9678901234",
+      "defaultQuantity": 12.0,
+      "defaultRate": 46.0,
+      "defaultMilkType": "Cow"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "trans001",
+      "customerId": "cust001",
+      "type": "sell",
+      "quantity": 5.0,
+      "rate": 55.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-01"
+    },
+    {
+      "id": "trans002",
+      "customerId": "cust002",
+      "type": "buy",
+      "quantity": 8.0,
+      "rate": 48.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-01"
+    },
+    {
+      "id": "trans003",
+      "customerId": "cust003",
+      "type": "sell",
+      "quantity": 3.5,
+      "rate": 60.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-01"
+    },
+    {
+      "id": "trans004",
+      "customerId": "cust004",
+      "type": "buy",
+      "quantity": 10.0,
+      "rate": 45.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-01"
+    },
+    {
+      "id": "trans005",
+      "customerId": "cust005",
+      "type": "sell",
+      "quantity": 6.0,
+      "rate": 58.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-02"
+    },
+    {
+      "id": "trans006",
+      "customerId": "cust006",
+      "type": "buy",
+      "quantity": 7.5,
+      "rate": 47.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-02"
+    },
+    {
+      "id": "trans007",
+      "customerId": "cust007",
+      "type": "sell",
+      "quantity": 4.0,
+      "rate": 56.0,
+      "milkType": "Buffalo",
+      "shift": "Morning",
+      "date": "2024-07-02"
+    },
+    {
+      "id": "trans008",
+      "customerId": "cust008",
+      "type": "buy",
+      "quantity": 9.0,
+      "rate": 49.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-02"
+    },
+    {
+      "id": "trans009",
+      "customerId": "cust009",
+      "type": "sell",
+      "quantity": 2.5,
+      "rate": 62.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-03"
+    },
+    {
+      "id": "trans010",
+      "customerId": "cust010",
+      "type": "buy",
+      "quantity": 12.0,
+      "rate": 46.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-03"
+    },
+    {
+      "id": "trans011",
+      "customerId": "cust001",
+      "type": "sell",
+      "quantity": 5.5,
+      "rate": 55.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-03"
+    },
+    {
+      "id": "trans012",
+      "customerId": "cust002",
+      "type": "buy",
+      "quantity": 7.0,
+      "rate": 48.0,
+      "milkType": "Buffalo",
+      "shift": "Morning",
+      "date": "2024-07-03"
+    },
+    {
+      "id": "trans013",
+      "customerId": "cust003",
+      "type": "sell",
+      "quantity": 4.0,
+      "rate": 60.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-04"
+    },
+    {
+      "id": "trans014",
+      "customerId": "cust004",
+      "type": "buy",
+      "quantity": 9.5,
+      "rate": 45.0,
+      "milkType": "Buffalo",
+      "shift": "Morning",
+      "date": "2024-07-04"
+    },
+    {
+      "id": "trans015",
+      "customerId": "cust005",
+      "type": "sell",
+      "quantity": 6.5,
+      "rate": 58.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-04"
+    },
+    {
+      "id": "trans016",
+      "customerId": "cust006",
+      "type": "buy",
+      "quantity": 8.0,
+      "rate": 47.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-05"
+    },
+    {
+      "id": "trans017",
+      "customerId": "cust007",
+      "type": "sell",
+      "quantity": 4.5,
+      "rate": 56.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-05"
+    },
+    {
+      "id": "trans018",
+      "customerId": "cust008",
+      "type": "buy",
+      "quantity": 8.5,
+      "rate": 49.0,
+      "milkType": "Buffalo",
+      "shift": "Morning",
+      "date": "2024-07-05"
+    },
+    {
+      "id": "trans019",
+      "customerId": "cust009",
+      "type": "sell",
+      "quantity": 3.0,
+      "rate": 62.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-06"
+    },
+    {
+      "id": "trans020",
+      "customerId": "cust010",
+      "type": "buy",
+      "quantity": 11.0,
+      "rate": 46.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-06"
+    },
+    {
+      "id": "trans021",
+      "customerId": "cust001",
+      "type": "sell",
+      "quantity": 5.0,
+      "rate": 55.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-07"
+    },
+    {
+      "id": "trans022",
+      "customerId": "cust002",
+      "type": "buy",
+      "quantity": 8.0,
+      "rate": 48.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-07"
+    },
+    {
+      "id": "trans023",
+      "customerId": "cust003",
+      "type": "sell",
+      "quantity": 3.5,
+      "rate": 60.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-07"
+    },
+    {
+      "id": "trans024",
+      "customerId": "cust004",
+      "type": "buy",
+      "quantity": 10.0,
+      "rate": 45.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-07"
+    },
+    {
+      "id": "trans025",
+      "customerId": "cust005",
+      "type": "sell",
+      "quantity": 6.0,
+      "rate": 58.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-08"
+    },
+    {
+      "id": "trans026",
+      "customerId": "cust006",
+      "type": "buy",
+      "quantity": 7.5,
+      "rate": 47.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-08"
+    },
+    {
+      "id": "trans027",
+      "customerId": "cust007",
+      "type": "sell",
+      "quantity": 4.0,
+      "rate": 56.0,
+      "milkType": "Buffalo",
+      "shift": "Morning",
+      "date": "2024-07-08"
+    },
+    {
+      "id": "trans028",
+      "customerId": "cust008",
+      "type": "buy",
+      "quantity": 9.0,
+      "rate": 49.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-08"
+    },
+    {
+      "id": "trans029",
+      "customerId": "cust009",
+      "type": "sell",
+      "quantity": 2.5,
+      "rate": 62.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-09"
+    },
+    {
+      "id": "trans030",
+      "customerId": "cust010",
+      "type": "buy",
+      "quantity": 12.0,
+      "rate": 46.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-09"
+    },
+    {
+      "id": "trans031",
+      "customerId": "cust001",
+      "type": "sell",
+      "quantity": 5.0,
+      "rate": 55.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-10"
+    },
+    {
+      "id": "trans032",
+      "customerId": "cust002",
+      "type": "buy",
+      "quantity": 8.0,
+      "rate": 48.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-10"
+    },
+    {
+      "id": "trans033",
+      "customerId": "cust003",
+      "type": "sell",
+      "quantity": 3.5,
+      "rate": 60.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-10"
+    },
+    {
+      "id": "trans034",
+      "customerId": "cust004",
+      "type": "buy",
+      "quantity": 10.0,
+      "rate": 45.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-10"
+    },
+    {
+      "id": "trans035",
+      "customerId": "cust005",
+      "type": "sell",
+      "quantity": 6.0,
+      "rate": 58.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-11"
+    },
+    {
+      "id": "trans036",
+      "customerId": "cust006",
+      "type": "buy",
+      "quantity": 7.5,
+      "rate": 47.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-11"
+    },
+    {
+      "id": "trans037",
+      "customerId": "cust007",
+      "type": "sell",
+      "quantity": 4.0,
+      "rate": 56.0,
+      "milkType": "Buffalo",
+      "shift": "Morning",
+      "date": "2024-07-11"
+    },
+    {
+      "id": "trans038",
+      "customerId": "cust008",
+      "type": "buy",
+      "quantity": 9.0,
+      "rate": 49.0,
+      "milkType": "Buffalo",
+      "shift": "Evening",
+      "date": "2024-07-11"
+    },
+    {
+      "id": "trans039",
+      "customerId": "cust009",
+      "type": "sell",
+      "quantity": 2.5,
+      "rate": 62.0,
+      "milkType": "Cow",
+      "shift": "Morning",
+      "date": "2024-07-12"
+    },
+    {
+      "id": "trans040",
+      "customerId": "cust010",
+      "type": "buy",
+      "quantity": 12.0,
+      "rate": 46.0,
+      "milkType": "Cow",
+      "shift": "Evening",
+      "date": "2024-07-12"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay001",
+      "customerId": "cust001",
+      "type": "received_from_buyer",
+      "amount": 2000.00,
+      "date": "2024-07-05"
+    },
+    {
+      "id": "pay002",
+      "customerId": "cust002",
+      "type": "paid_to_seller",
+      "amount": 1500.00,
+      "date": "2024-07-05"
+    },
+    {
+      "id": "pay003",
+      "customerId": "cust003",
+      "type": "received_from_buyer",
+      "amount": 1000.00,
+      "date": "2024-07-08"
+    },
+    {
+      "id": "pay004",
+      "customerId": "cust004",
+      "type": "paid_to_seller",
+      "amount": 2500.00,
+      "date": "2024-07-08"
+    },
+    {
+      "id": "pay005",
+      "customerId": "cust005",
+      "type": "received_from_buyer",
+      "amount": 1800.00,
+      "date": "2024-07-10"
+    },
+    {
+      "id": "pay006",
+      "customerId": "cust006",
+      "type": "paid_to_seller",
+      "amount": 1200.00,
+      "date": "2024-07-10"
+    },
+    {
+      "id": "pay007",
+      "customerId": "cust007",
+      "type": "received_from_buyer",
+      "amount": 1100.00,
+      "date": "2024-07-12"
+    },
+    {
+      "id": "pay008",
+      "customerId": "cust008",
+      "type": "paid_to_seller",
+      "amount": 2000.00,
+      "date": "2024-07-12"
+    },
+    {
+      "id": "pay009",
+      "customerId": "cust009",
+      "type": "received_from_buyer",
+      "amount": 700.00,
+      "date": "2024-07-15"
+    },
+    {
+      "id": "pay010",
+      "customerId": "cust010",
+      "type": "paid_to_seller",
+      "amount": 3000.00,
+      "date": "2024-07-15"
+    }
+  ]
+}
