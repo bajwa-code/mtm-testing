@@ -197,7 +197,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="dashboardPagination" class="flex justify-between items-center mt-4 space-x-2">
+            <div id="dashboardPagination" class="flex flex-wrap justify-center sm:justify-between items-center mt-4 gap-2">
                 <span id="dashboardEntryCount" class="text-sm text-gray-600"></span>
             </div>
         </section>
@@ -258,7 +258,8 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="name">Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="id">ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="name">Name</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="type">Type</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="phone">Phone</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="defaultQuantity">Default Quantity (L)</th>
@@ -272,7 +273,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="customersPagination" class="flex justify-between items-center mt-4 space-x-2">
+            <div id="customersPagination" class="flex flex-wrap justify-center sm:justify-between items-center mt-4 gap-2">
                 <span id="customerEntryCount" class="text-sm text-gray-600"></span>
             </div>
         </section>
@@ -290,7 +291,11 @@
                         <!-- Search results will appear here -->
                     </div>
                 </div>
-    
+                <div>
+                    <label for="selectedCustomerTypeDisplay" class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
+                    <input type="text" id="selectedCustomerTypeDisplay" readonly class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-600 cursor-not-allowed sm:text-sm">
+                    <!-- The actual transaction type ('buy'/'sell') will be derived internally -->
+                </div>
                 <div>
                     <label for="shift" class="block text-sm font-medium text-gray-700 mb-1">Morning or Evening</label>
                     <select id="shift" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
@@ -298,11 +303,6 @@
                         <option value="Morning">Morning</option>
                         <option value="Evening">Evening</option>
                     </select>
-                </div>
-                <div>
-                    <label for="selectedCustomerTypeDisplay" class="block text-sm font-medium text-gray-700 mb-1">Customer Type</label>
-                    <input type="text" id="selectedCustomerTypeDisplay" readonly class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-600 cursor-not-allowed sm:text-sm">
-                    <!-- The actual transaction type ('buy'/'sell') will be derived internally -->
                 </div>
                 <div>
                     <label for="transactionQuantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity (Liters)</label>
@@ -339,7 +339,8 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="date">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="id">ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="date">Date</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="customerName">Customer</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="customerTypeDisplay">Customer Type</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="quantity">Quantity (L)</th>
@@ -355,7 +356,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="transactionsPagination" class="flex justify-between items-center mt-4 space-x-2">
+            <div id="transactionsPagination" class="flex flex-wrap justify-center sm:justify-between items-center mt-4 gap-2">
                 <span id="transactionEntryCount" class="text-sm text-gray-600"></span>
             </div>
             <!-- New Section: Check for Missing Transactions -->
@@ -423,7 +424,8 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="date">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg sortable-header" data-sort-column="id">ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="date">Date</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="customerName">Customer</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="type">Type</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header" data-sort-column="amount">Amount (₹)</th>
@@ -435,7 +437,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="paymentsPagination" class="flex justify-between items-center mt-4 space-x-2">
+            <div id="paymentsPagination" class="flex flex-wrap justify-center sm:justify-between items-center mt-4 gap-2">
                 <span id="paymentEntryCount" class="text-sm text-gray-600"></span>
             </div>
         </section>
@@ -444,7 +446,7 @@
         <section id="dataManagementSection" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Data Management (JSON File)</h2>
             <p class="text-gray-700 mb-6">Use this section to export your current data as a JSON file for backup, or import data from a previously saved JSON file. Importing data will be *merged* with your current data in the application.</p>
-            <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
                 <button id="exportDataBtn" class="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-md font-medium flex-grow">
                     Export Data to JSON
                 </button>
@@ -460,6 +462,13 @@
                     </button>
                 </div>
             </div>
+            <div class="border-t pt-6 mt-6 border-red-200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Danger Zone</h3>
+                <p class="text-gray-700 mb-4">This action will permanently delete ALL customer, transaction, and payment data from this application. This cannot be undone.</p>
+                <button id="deleteAllDataBtn" class="px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors shadow-md font-medium w-full sm:w-auto">
+                    Delete All Data
+                </button>
+            </div>
         </section>
 
     </main>
@@ -474,6 +483,13 @@
         let customers = [];
         let transactions = [];
         let payments = [];
+
+        // Counters for sequential IDs
+        let idCounters = {
+            customer: 0,
+            transaction: 0,
+            payment: 0
+        };
 
         // --- Sorting and Search State ---
         // Changed default sort direction to 'desc' for all relevant sections
@@ -503,9 +519,72 @@
 
         // --- Utility Functions ---
 
-        // Function to generate a unique ID
-        function generateId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        /**
+         * Generates a unique ID based on type (customer, transaction, payment)
+         * and maintains a persistent sequential counter for each.
+         * @param {string} type - The type of entity ('customer', 'transaction', 'payment').
+         * @returns {string} The formatted sequential ID (e.g., "C01", "T15").
+         */
+        function generateId(type) {
+            let prefix;
+            let counterName;
+
+            if (type === 'customer') {
+                prefix = 'C';
+                counterName = 'customer';
+            } else if (type === 'transaction') {
+                prefix = 'T';
+                counterName = 'transaction';
+            } else if (type === 'payment') {
+                prefix = 'P';
+                counterName = 'payment';
+            } else {
+                // Fallback for unexpected types, though should not happen with proper calls
+                console.error("Invalid type for generateId:", type);
+                return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); // Fallback to alphanumeric
+            }
+
+            idCounters[counterName]++;
+            // Pad with leading zeros to at least 2 digits (C01, C02, ... C09, C10)
+            // If numbers go beyond 99, it will naturally expand (C100, C101)
+            const newId = `${prefix}${String(idCounters[counterName]).padStart(2, '0')}`;
+            console.log(`Generated new ID for ${type}: ${newId}`);
+            return newId;
+        }
+
+        /**
+         * Initializes the ID counters by scanning existing data to find the highest sequential ID
+         * for each type. This ensures new IDs continue the sequence correctly.
+         */
+        function initializeIdCounters() {
+            let maxCustNum = 0;
+            customers.forEach(c => {
+                const match = c.id.match(/^C(\d+)$/);
+                if (match) {
+                    maxCustNum = Math.max(maxCustNum, parseInt(match[1], 10));
+                }
+            });
+            idCounters.customer = maxCustNum;
+
+            let maxTransNum = 0;
+            transactions.forEach(t => {
+                const match = t.id.match(/^T(\d+)$/);
+                if (match) {
+                    maxTransNum = Math.max(maxTransNum, parseInt(match[1], 10));
+                }
+            });
+            idCounters.transaction = maxTransNum;
+
+            let maxPayNum = 0;
+            payments.forEach(p => {
+                const match = p.id.match(/^P(\d+)$/);
+                if (match) {
+                    maxPayNum = Math.max(maxPayNum, parseInt(match[1], 10));
+                }
+            });
+            idCounters.payment = maxPayNum;
+
+            console.log('Initialized ID Counters:', idCounters);
         }
 
         // Function to format date for display
@@ -613,9 +692,15 @@
 
         let onModalConfirmCallback = () => {};
 
-        function showModal(title, message, onConfirm) {
+        function showModal(title, message, onConfirm, confirmButtonText = 'Confirm', cancelButtonText = 'Cancel', confirmButtonClass = 'bg-red-600 hover:bg-red-700') {
             modalTitle.textContent = title;
             modalMessage.textContent = message;
+            modalConfirmBtn.textContent = confirmButtonText;
+            modalCancelBtn.textContent = cancelButtonText;
+
+            // Reset and apply new class for confirm button
+            modalConfirmBtn.className = `px-4 py-2 text-white rounded-md transition-colors ${confirmButtonClass}`;
+
             onModalConfirmCallback = onConfirm;
             customModal.classList.remove('hidden');
         }
@@ -676,6 +761,8 @@
                 console.log('Loaded Customers count:', customers.length);
                 console.log('Loaded Transactions count:', transactions.length);
                 console.log('Loaded Payments count:', payments.length);
+
+                initializeIdCounters(); // Initialize counters after loading data
             } catch (e) {
                 console.error("Error parsing localStorage data, initializing empty:", e);
                 customers = [];
@@ -706,7 +793,7 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            showModal('Export Complete', 'Your data has been exported to milk_trade_data_backup.json.', () => {});
+            showModal('Export Complete', 'Your data has been exported to milk_trade_data_backup.json.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
         }
 
         /**
@@ -716,7 +803,7 @@
         function importDataFromJson(event) {
             const file = event.target.files[0];
             if (!file) {
-                showModal('Import Error', 'Please select a JSON file to import.', () => {});
+                showModal('Import Error', 'Please select a JSON file to import.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
@@ -725,24 +812,39 @@
                 try {
                     const importedData = JSON.parse(e.target.result);
                     if (importedData.customers && importedData.transactions && importedData.payments) {
-                        // Merge imported data with existing data
-                        customers = customers.concat(importedData.customers);
-                        transactions = transactions.concat(importedData.transactions);
-                        payments = payments.concat(importedData.payments);
+
+                        // Helper function to merge or add items based on ID
+                        const mergeData = (existingArray, importedArray) => {
+                            importedArray.forEach(importedItem => {
+                                const existingIndex = existingArray.findIndex(item => item.id === importedItem.id);
+                                if (existingIndex !== -1) {
+                                    // Update existing item
+                                    existingArray[existingIndex] = importedItem;
+                                } else {
+                                    // Add new item
+                                    existingArray.push(importedItem);
+                                }
+                            });
+                        };
+
+                        mergeData(customers, importedData.customers);
+                        mergeData(transactions, importedData.transactions);
+                        mergeData(payments, importedData.payments);
 
                         saveData(); // Save merged data to localStorage
+                        initializeIdCounters(); // Re-initialize counters after merging imported data
                         renderAllData();
-                        showModal('Import Complete', 'Data successfully imported from file and merged with current data. Merged data saved to local storage.', () => {});
+                        showModal('Import Complete', 'Data successfully imported from file and merged with current data. Existing entries with matching IDs were updated, new entries were added.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                     } else {
-                        showModal('Import Error', 'Invalid JSON file format. Missing expected data structures (customers, transactions, payments).', () => {});
+                        showModal('Import Error', 'Invalid JSON file format. Missing expected data structures (customers, transactions, payments).', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                     }
                 } catch (error) {
                     console.error("Error parsing JSON file:", error);
-                    showModal('Import Error', 'Failed to parse JSON file. Please ensure it is valid JSON.', () => {});
+                    showModal('Import Error', 'Failed to parse JSON file. Please ensure it is valid JSON.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 }
             };
             reader.onerror = () => {
-                showModal('Import Error', 'Failed to read file.', () => {});
+                showModal('Import Error', 'Failed to read file.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
             };
             reader.readAsText(file);
             // Clear the file input after reading
@@ -785,7 +887,7 @@
                     if (payment.type === 'received_from_buyer') {
                         balances[payment.customerId].balance -= amount; // Buyer paid you
                     } else if (payment.type === 'paid_to_seller') {
-                        balances[payment.customerId].balance += amount; // You paid seller
+                        balances[payment.customerId].balance += amount;
                     }
                 }
             });
@@ -883,30 +985,116 @@
         function renderPagination(totalItems, currentPage, paginationContainerId, renderFunction, pageStateObject) {
             const totalPages = Math.ceil(totalItems / itemsPerPage);
             const paginationContainer = document.getElementById(paginationContainerId);
-            const entryCountSpan = paginationContainer.querySelector('span'); // Get the span for entry count
+            const entryCountSpan = paginationContainer.querySelector('span');
 
             // Clear previous pagination buttons, but keep the entry count span
             const existingButtons = paginationContainer.querySelectorAll('button');
             existingButtons.forEach(button => button.remove());
+            const existingEllipses = paginationContainer.querySelectorAll('.pagination-ellipsis');
+            existingEllipses.forEach(span => span.remove());
 
             if (totalPages <= 1) {
-                // If only one page or less, just display count and no buttons
                 entryCountSpan.textContent = `Total Entries: ${totalItems}`;
                 return;
             }
 
-            // Add pagination buttons to the container
-            for (let i = 1; i <= totalPages; i++) {
+            // Add Previous button
+            const prevButton = document.createElement('button');
+            prevButton.innerHTML = '&lt;'; // Left arrow
+            prevButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors border border-gray-300 ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-200'}`;
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                pageStateObject.currentPage = Math.max(1, currentPage - 1);
+                renderFunction();
+            });
+            paginationContainer.appendChild(prevButton);
+
+            // Logic for displaying page numbers
+            const maxPagesToShow = 5; // Number of page buttons to show directly
+            let startPage, endPage;
+
+            if (totalPages <= maxPagesToShow + 2) { // If total pages are small enough to show most
+                startPage = 1;
+                endPage = totalPages;
+            } else {
+                // Determine the range of pages to show around the current page
+                const pagesBefore = Math.floor((maxPagesToShow - 1) / 2);
+                const pagesAfter = Math.ceil((maxPagesToShow - 1) / 2);
+
+                startPage = currentPage - pagesBefore;
+                endPage = currentPage + pagesAfter;
+
+                if (startPage < 1) {
+                    endPage += (1 - startPage);
+                    startPage = 1;
+                }
+
+                if (endPage > totalPages) {
+                    startPage -= (endPage - totalPages);
+                    endPage = totalPages;
+                }
+
+                if (startPage > 1) {
+                    // Always show first page and ellipsis if not near beginning
+                    const firstPageButton = document.createElement('button');
+                    firstPageButton.textContent = '1';
+                    firstPageButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors border border-gray-300 ${1 === currentPage ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'}`;
+                    firstPageButton.addEventListener('click', () => {
+                        pageStateObject.currentPage = 1;
+                        renderFunction();
+                    });
+                    paginationContainer.appendChild(firstPageButton);
+
+                    if (startPage > 2) { // Only show ellipsis if there's more than just page 1
+                        const ellipsisSpan = document.createElement('span');
+                        ellipsisSpan.textContent = '...';
+                        ellipsisSpan.className = 'pagination-ellipsis px-2 py-1 text-gray-600';
+                        paginationContainer.appendChild(ellipsisSpan);
+                    }
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
                 const button = document.createElement('button');
                 button.textContent = i;
-                button.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-blue-200'}`;
+                button.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors border border-gray-300 ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'}`;
                 button.addEventListener('click', () => {
-                    pageStateObject.currentPage = i; // Now updates the actual currentPage property in the state object
+                    pageStateObject.currentPage = i;
                     renderFunction();
                 });
                 paginationContainer.appendChild(button);
             }
-            entryCountSpan.textContent = `Total Entries: ${totalItems}`; // Update total entries count
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) { // Only show ellipsis if there's more than just the last page
+                    const ellipsisSpan = document.createElement('span');
+                    ellipsisSpan.textContent = '...';
+                    ellipsisSpan.className = 'pagination-ellipsis px-2 py-1 text-gray-600';
+                    paginationContainer.appendChild(ellipsisSpan);
+                }
+                // Always show last page
+                const lastPageButton = document.createElement('button');
+                lastPageButton.textContent = totalPages;
+                lastPageButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors border border-gray-300 ${totalPages === currentPage ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'}`;
+                lastPageButton.addEventListener('click', () => {
+                    pageStateObject.currentPage = totalPages;
+                    renderFunction();
+                });
+                paginationContainer.appendChild(lastPageButton);
+            }
+
+            // Add Next button
+            const nextButton = document.createElement('button');
+            nextButton.innerHTML = '&gt;'; // Right arrow
+            nextButton.className = `px-3 py-1 rounded-md text-sm font-medium transition-colors border border-gray-300 ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-200'}`;
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                pageStateObject.currentPage = Math.min(totalPages, currentPage + 1);
+                renderFunction();
+            });
+            paginationContainer.appendChild(nextButton);
+
+            entryCountSpan.textContent = `Total Entries: ${totalItems}`;
         }
 
 
@@ -1025,7 +1213,7 @@
         }
 
         function renderCustomers() {
-            let filteredCustomers = filterData(customers, customerSearchTerm, ['name', 'type', 'phone', 'defaultQuantity', 'defaultRate', 'defaultMilkType'], customerDateRange, true); // Filter by activity
+            let filteredCustomers = filterData(customers, customerSearchTerm, ['name', 'type', 'phone', 'defaultQuantity', 'defaultRate', 'defaultMilkType', 'id'], customerDateRange, true); // Filter by activity
             let sortedCustomers = sortData(filteredCustomers, customerSortConfig);
 
             const startIndex = (customerPaginationState.currentPage - 1) * itemsPerPage;
@@ -1038,6 +1226,11 @@
             paginatedCustomers.forEach(customer => {
                 const row = customersTableBody.insertRow();
                 row.className = 'hover:bg-gray-50';
+
+                // ID Cell
+                const idCell = row.insertCell();
+                idCell.className = 'px-6 py-4 whitespace-nowrap text-xs text-gray-500';
+                idCell.textContent = customer.id;
 
                 const nameCell = row.insertCell();
                 nameCell.className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
@@ -1097,7 +1290,7 @@
             });
 
             console.log('Transactions before sort:', JSON.parse(JSON.stringify(augmentedTransactions))); // Deep copy for logging
-            let filteredTransactions = filterData(augmentedTransactions, transactionSearchTerm, ['date', 'customerName', 'customerTypeDisplay', 'quantity', 'rate', 'milkType', 'shift', 'totalAmount'], transactionDateRange);
+            let filteredTransactions = filterData(augmentedTransactions, transactionSearchTerm, ['date', 'customerName', 'customerTypeDisplay', 'quantity', 'rate', 'milkType', 'shift', 'totalAmount', 'id'], transactionDateRange);
             let sortedTransactions = sortData(filteredTransactions, transactionSortConfig);
             console.log('Transactions after sort:', JSON.parse(JSON.stringify(sortedTransactions))); // Deep copy for logging
 
@@ -1129,29 +1322,33 @@
                 const row = transactionsTableBody.insertRow();
                 row.className = 'hover:bg-gray-50';
 
+                // ID Cell
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-xs text-gray-500';
+                row.cells[0].textContent = transaction.id;
+
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Date
-                row.cells[0].textContent = formatDate(transaction.date);
+                row.cells[1].textContent = formatDate(transaction.date);
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'; // Customer Name
-                row.cells[1].textContent = transaction.customerName;
+                row.cells[2].textContent = transaction.customerName;
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Customer Type (formerly Transaction Type)
-                row.cells[2].textContent = transaction.customerTypeDisplay; // Display customer type here
+                row.cells[3].textContent = transaction.customerTypeDisplay; // Display customer type here
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Quantity
-                row.cells[3].textContent = parseFloat(transaction.quantity).toFixed(2);
+                row.cells[4].textContent = parseFloat(transaction.quantity).toFixed(2);
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Rate
-                row.cells[4].textContent = formatCurrency(parseFloat(transaction.rate));
+                row.cells[5].textContent = formatCurrency(parseFloat(transaction.rate));
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Milk Type
-                row.cells[5].textContent = transaction.milkType || 'N/A';
+                row.cells[6].textContent = transaction.milkType || 'N/A';
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500'; // Shift
-                row.cells[6].textContent = transaction.shift || 'N/A';
+                row.cells[7].textContent = transaction.shift || 'N/A';
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-semibold'; // Total Amount
-                row.cells[7].textContent = formatCurrency(transaction.totalAmount);
+                row.cells[8].textContent = formatCurrency(transaction.totalAmount);
 
                 const actionsCell = row.insertCell();
                 actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
@@ -1165,12 +1362,12 @@
             // Add summary row for Buffalo Milk
             const buffaloSummaryRow = transactionsTableBody.insertRow();
             buffaloSummaryRow.className = 'bg-blue-50 font-bold';
-            buffaloSummaryRow.insertCell().colSpan = 3; // Span across first 3 columns
+            buffaloSummaryRow.insertCell().colSpan = 4; // Span across ID, Date, Customer, Customer Type
             buffaloSummaryRow.cells[0].className = 'px-6 py-3 text-right text-sm text-blue-800';
             buffaloSummaryRow.cells[0].textContent = 'Total Buffalo Milk:';
             buffaloSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-blue-800';
             buffaloSummaryRow.cells[1].textContent = totalBuffaloQuantity.toFixed(2) + ' L';
-            buffaloSummaryRow.insertCell().colSpan = 3; // Span across rate, milk type, shift
+            buffaloSummaryRow.insertCell().colSpan = 3; // Span across Rate, Milk Type, Shift
             buffaloSummaryRow.cells[2].className = 'px-6 py-3'; // Empty cell for alignment
             buffaloSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-blue-800';
             buffaloSummaryRow.cells[3].textContent = formatCurrency(totalBuffaloAmount);
@@ -1179,12 +1376,12 @@
             // Add summary row for Cow Milk
             const cowSummaryRow = transactionsTableBody.insertRow();
             cowSummaryRow.className = 'bg-green-50 font-bold';
-            cowSummaryRow.insertCell().colSpan = 3; // Span across first 3 columns
+            cowSummaryRow.insertCell().colSpan = 4; // Span across ID, Date, Customer, Customer Type
             cowSummaryRow.cells[0].className = 'px-6 py-3 text-right text-sm text-green-800';
             cowSummaryRow.cells[0].textContent = 'Total Cow Milk:';
             cowSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-green-800';
             cowSummaryRow.cells[1].textContent = totalCowQuantity.toFixed(2) + ' L';
-            cowSummaryRow.insertCell().colSpan = 3; // Span across rate, milk type, shift
+            cowSummaryRow.insertCell().colSpan = 3; // Span across Rate, Milk Type, Shift
             cowSummaryRow.cells[2].className = 'px-6 py-3'; // Empty cell for alignment
             cowSummaryRow.insertCell().className = 'px-6 py-3 text-sm text-green-800';
             cowSummaryRow.cells[3].textContent = formatCurrency(totalCowAmount);
@@ -1207,7 +1404,7 @@
             });
 
             console.log('Payments before sort:', JSON.parse(JSON.stringify(augmentedPayments))); // Deep copy for logging
-            let filteredPayments = filterData(augmentedPayments, paymentSearchTerm, ['date', 'customerName', 'type', 'amount'], paymentDateRange);
+            let filteredPayments = filterData(augmentedPayments, paymentSearchTerm, ['date', 'customerName', 'type', 'amount', 'id'], paymentDateRange);
             let sortedPayments = sortData(filteredPayments, paymentSortConfig);
             console.log('Payments after sort:', JSON.parse(JSON.stringify(sortedPayments))); // Deep copy for logging
 
@@ -1222,17 +1419,21 @@
                 const row = paymentsTableBody.insertRow();
                 row.className = 'hover:bg-gray-50';
 
+                // ID Cell
+                row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-xs text-gray-500';
+                row.cells[0].textContent = payment.id;
+
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
-                row.cells[0].textContent = formatDate(payment.date);
+                row.cells[1].textContent = formatDate(payment.date);
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900';
-                row.cells[1].textContent = payment.customerName;
+                row.cells[2].textContent = payment.customerName;
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm text-gray-500';
-                row.cells[2].textContent = payment.type === 'paid_to_seller' ? 'Paid to Seller' : 'Received from Buyer';
+                row.cells[3].textContent = payment.type === 'paid_to_seller' ? 'Paid to Seller' : 'Received from Buyer';
 
                 row.insertCell().className = 'px-6 py-4 whitespace-nowrap text-sm font-semibold';
-                row.cells[3].textContent = formatCurrency(parseFloat(payment.amount));
+                row.cells[4].textContent = formatCurrency(parseFloat(payment.amount));
 
                 const actionsCell = row.insertCell();
                 actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
@@ -1270,7 +1471,7 @@
 
 
             if (!name || !type) {
-                showModal('Input Error', 'Customer Name and Type are required.', () => {});
+                showModal('Input Error', 'Customer Name and Type are required.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
@@ -1282,7 +1483,7 @@
                 }
             } else {
                 // Add new customer
-                customers.push({ id: generateId(), name, type, phone, defaultQuantity, defaultRate, defaultMilkType });
+                customers.push({ id: generateId('customer'), name, type, phone, defaultQuantity, defaultRate, defaultMilkType });
             }
             customerForm.reset();
             document.getElementById('customerId').value = ''; // Clear hidden ID
@@ -1391,7 +1592,7 @@
             const selectedCustomer = customers.find(c => c.id === customerId);
 
             if (!selectedCustomer) {
-                showModal('Input Error', 'Please select a valid customer from the search suggestions.', () => {});
+                showModal('Input Error', 'Please select a valid customer from the search suggestions.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
@@ -1411,12 +1612,12 @@
             }
 
             if (isNaN(quantity) || isNaN(rate) || !milkType || !shift) {
-                showModal('Input Error', 'Quantity, Rate, Milk Type, and Shift are required and must be valid numbers/selections.', () => {});
+                showModal('Input Error', 'Quantity, Rate, Milk Type, and Shift are required and must be valid numbers/selections.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
             transactions.push({
-                id: generateId(),
+                id: generateId('transaction'),
                 customerId,
                 type: transactionType,
                 quantity,
@@ -1505,7 +1706,7 @@
             const selectedCustomer = customers.find(c => c.id === customerId);
 
             if (!selectedCustomer) {
-                showModal('Input Error', 'Please select a valid customer from the search suggestions.', () => {});
+                showModal('Input Error', 'Please select a valid customer from the search suggestions.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
@@ -1520,12 +1721,12 @@
             }
 
             if (!customerId || !type || isNaN(amount)) {
-                showModal('Input Error', 'Customer, Payment Type, and Amount are required and must be valid numbers.', () => {});
+                showModal('Input Error', 'Customer, Payment Type, and Amount are required and must be valid numbers.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
             payments.push({
-                id: generateId(),
+                id: generateId('payment'),
                 customerId,
                 type,
                 amount,
@@ -1751,6 +1952,32 @@
         });
         document.getElementById('importFileInput').addEventListener('change', importDataFromJson);
 
+        // --- Delete All Data Functionality ---
+        const deleteAllDataBtn = document.getElementById('deleteAllDataBtn');
+        deleteAllDataBtn.addEventListener('click', () => {
+            showModal(
+                'Confirm All Data Deletion',
+                'Are you absolutely sure you want to delete ALL customer, transaction, and payment data? This action cannot be undone.',
+                () => {
+                    customers = [];
+                    transactions = [];
+                    payments = [];
+                    idCounters = { customer: 0, transaction: 0, payment: 0 }; // Reset ID counters
+                    saveData(); // Save empty state
+                    // Reset all pagination states to page 1
+                    dashboardPaginationState.currentPage = 1;
+                    customerPaginationState.currentPage = 1;
+                    transactionPaginationState.currentPage = 1;
+                    paymentPaginationState.currentPage = 1;
+                    renderAllData(); // Re-render UI with empty data
+                    showModal('Data Deleted', 'All data has been successfully deleted.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
+                },
+                'Delete All', // Custom text for confirm button
+                'Cancel',
+                'bg-red-600 hover:bg-red-700' // Custom class for confirm button
+            );
+        });
+
 
         // --- Initialization ---
         window.onload = function() {
@@ -1758,7 +1985,7 @@
 
             // Check for localStorage support
             if (typeof(Storage) === "undefined") {
-                showModal('Browser Error', 'Your browser does not support local storage. Data persistence will not work.', () => {});
+                showModal('Browser Error', 'Your browser does not support local storage. Data persistence will not work.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
             }
 
             loadData(); // Load initial data from localStorage
