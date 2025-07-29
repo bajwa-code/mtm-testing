@@ -7,6 +7,8 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -147,6 +149,9 @@
                 <button id="paymentsTab" class="px-4 py-2 rounded-md transition-colors">
                     Payments
                 </button>
+                <button id="reportsTab" class="px-4 py-2 rounded-md transition-colors">
+                    Reports
+                </button>
                 <button id="dataManagementTab" class="px-4 py-2 rounded-md transition-colors">
                     Data Management
                 </button>
@@ -283,6 +288,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Milk Transactions</h2>
 
             <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-4 bg-blue-50 rounded-lg shadow-inner">
+                <input type="hidden" id="transactionEditId"> <!-- Hidden field for editing -->
                 <div class="relative">
                     <label for="transactionCustomerSearch" class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
                     <input type="text" id="transactionCustomerSearch" placeholder="Search customer by name..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
@@ -298,7 +304,7 @@
                 </div>
                 <div>
                     <label for="shift" class="block text-sm font-medium text-gray-700 mb-1">Morning or Evening</label>
-                    <select id="shift" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <select id="shift" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         <option value="">Select Shift</option>
                         <option value="Morning">Morning</option>
                         <option value="Evening">Evening</option>
@@ -381,6 +387,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Payment Management</h2>
 
             <form id="paymentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 p-4 bg-blue-50 rounded-lg shadow-inner">
+                <input type="hidden" id="paymentEditId"> <!-- Hidden field for editing -->
                 <div class="relative">
                     <label for="paymentCustomerSearch" class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
                     <input type="text" id="paymentCustomerSearch" placeholder="Search customer by name..." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
@@ -439,6 +446,55 @@
             </div>
             <div id="paymentsPagination" class="flex flex-wrap justify-center sm:justify-between items-center mt-4 gap-2">
                 <span id="paymentEntryCount" class="text-sm text-gray-600"></span>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reportsSection" class="tab-content hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">Reports & Analytics</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg shadow-inner">
+                <div>
+                    <label for="reportStartDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <input type="date" id="reportStartDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+                <div>
+                    <label for="reportEndDate" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <input type="date" id="reportEndDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Summary for Selected Period</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-indigo-50 p-5 rounded-lg shadow-md">
+                    <p class="text-lg font-medium text-indigo-700">Total Milk Bought</p>
+                    <p id="totalMilkBought" class="text-3xl font-bold text-indigo-900 mt-1">0.00 L</p>
+                </div>
+                <div class="bg-teal-50 p-5 rounded-lg shadow-md">
+                    <p class="text-lg font-medium text-teal-700">Total Milk Sold</p>
+                    <p id="totalMilkSold" class="text-3xl font-bold text-teal-900 mt-1">0.00 L</p>
+                </div>
+                <div class="bg-orange-50 p-5 rounded-lg shadow-md">
+                    <p class="text-lg font-medium text-orange-700">Total Payments Made</p>
+                    <p id="totalPaymentsMade" class="text-3xl font-bold text-orange-900 mt-1">₹0.00</p>
+                </div>
+                <div class="bg-lime-50 p-5 rounded-lg shadow-md">
+                    <p class="text-lg font-medium text-lime-700">Total Payments Received</p>
+                    <p id="totalPaymentsReceived" class="text-3xl font-bold text-lime-900 mt-1">₹0.00</p>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Gross Profit / Loss</h3>
+            <div class="bg-purple-50 p-5 rounded-lg shadow-md mb-8">
+                <p class="text-lg font-medium text-purple-700">Gross Profit/Loss (Milk Value)</p>
+                <p id="grossProfitLoss" class="text-3xl font-bold text-purple-900 mt-1">₹0.00</p>
+                <p class="text-sm text-gray-600 mt-2">Calculated as (Value of Milk Sold) - (Value of Milk Bought) within the selected period.</p>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Daily Milk Quantity Trends</h3>
+            <div class="bg-gray-50 p-5 rounded-lg shadow-inner">
+                <canvas id="milkQuantityChart"></canvas>
+                <p id="chartNoDataMessage" class="text-center text-gray-500 mt-4 hidden">No transaction data available for the selected period to generate chart.</p>
             </div>
         </section>
 
@@ -508,6 +564,7 @@
         let customerDateRange = { start: '', end: '' };
         let transactionDateRange = { start: '', end: '' };
         let paymentDateRange = { start: '', end: '' };
+        let reportDateRange = { start: '', end: '' }; // New state for reports
 
         // --- Pagination State ---
         const itemsPerPage = 10;
@@ -516,6 +573,9 @@
         let customerPaginationState = { currentPage: 1 };
         let transactionPaginationState = { currentPage: 1 };
         let paymentPaginationState = { currentPage: 1 };
+
+        // Chart instance
+        let milkQuantityChartInstance = null;
 
         // --- Utility Functions ---
 
@@ -1352,6 +1412,12 @@
 
                 const actionsCell = row.insertCell();
                 actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.className = 'text-blue-600 hover:text-blue-900 mr-3';
+                editButton.onclick = () => editTransaction(transaction.id);
+                actionsCell.appendChild(editButton);
+
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.className = 'text-red-600 hover:text-red-900';
@@ -1437,6 +1503,12 @@
 
                 const actionsCell = row.insertCell();
                 actionsCell.className = 'px-6 py-4 whitespace-nowrap text-right text-sm font-medium';
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.className = 'text-blue-600 hover:text-blue-900 mr-3';
+                editButton.onclick = () => editPayment(payment.id);
+                actionsCell.appendChild(editButton);
+
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.className = 'text-red-600 hover:text-red-900';
@@ -1447,12 +1519,175 @@
             renderPagination(sortedPayments.length, paymentPaginationState.currentPage, 'paymentsPagination', renderPayments, paymentPaginationState);
         }
 
+        /**
+         * Generates report data based on the selected date range.
+         * @param {string} startDateString - Start date in YYYY-MM-DD format.
+         * @param {string} endDateString - End date in YYYY-MM-DD format.
+         * @returns {Object} An object containing summary data and chart data.
+         */
+        function generateReportData(startDateString, endDateString) {
+            let totalMilkBought = 0;
+            let totalMilkSold = 0;
+            let totalPaymentsMade = 0;
+            let totalPaymentsReceived = 0;
+            let totalMilkBoughtValue = 0;
+            let totalMilkSoldValue = 0;
+
+            const dailyMilkData = {}; // { 'YYYY-MM-DD': { bought: 0, sold: 0 } }
+
+            const startDate = startDateString ? new Date(startDateString + 'T00:00:00') : null;
+            const endDate = endDateString ? new Date(endDateString + 'T23:59:59') : null;
+
+            // Filter transactions and payments by date range
+            const filteredTransactions = transactions.filter(t => {
+                const transactionDate = new Date(t.date + 'T00:00:00');
+                return (!startDate || transactionDate >= startDate) && (!endDate || transactionDate <= endDate);
+            });
+
+            const filteredPayments = payments.filter(p => {
+                const paymentDate = new Date(p.date + 'T00:00:00');
+                return (!startDate || paymentDate >= startDate) && (!endDate || paymentDate <= endDate);
+            });
+
+            filteredTransactions.forEach(t => {
+                const quantity = parseFloat(t.quantity);
+                const rate = parseFloat(t.rate);
+                const value = quantity * rate;
+
+                if (t.type === 'buy') {
+                    totalMilkBought += quantity;
+                    totalMilkBoughtValue += value;
+                } else if (t.type === 'sell') {
+                    totalMilkSold += quantity;
+                    totalMilkSoldValue += value;
+                }
+
+                // Aggregate for chart data
+                if (!dailyMilkData[t.date]) {
+                    dailyMilkData[t.date] = { bought: 0, sold: 0 };
+                }
+                if (t.type === 'buy') {
+                    dailyMilkData[t.date].bought += quantity;
+                } else if (t.type === 'sell') {
+                    dailyMilkData[t.date].sold += quantity;
+                }
+            });
+
+            filteredPayments.forEach(p => {
+                const amount = parseFloat(p.amount);
+                if (p.type === 'paid_to_seller') {
+                    totalPaymentsMade += amount;
+                } else if (p.type === 'received_from_buyer') {
+                    totalPaymentsReceived += amount;
+                }
+            });
+
+            const grossProfitLoss = totalMilkSoldValue - totalMilkBoughtValue;
+
+            // Prepare data for chart
+            const chartLabels = Object.keys(dailyMilkData).sort();
+            const chartBoughtData = chartLabels.map(date => dailyMilkData[date].bought);
+            const chartSoldData = chartLabels.map(date => dailyMilkData[date].sold);
+
+            return {
+                totalMilkBought,
+                totalMilkSold,
+                totalPaymentsMade,
+                totalPaymentsReceived,
+                grossProfitLoss,
+                chartData: {
+                    labels: chartLabels,
+                    bought: chartBoughtData,
+                    sold: chartSoldData
+                }
+            };
+        }
+
+        function renderReports() {
+            const reportStartDate = document.getElementById('reportStartDate').value;
+            const reportEndDate = document.getElementById('reportEndDate').value;
+
+            const reportData = generateReportData(reportStartDate, reportEndDate);
+
+            document.getElementById('totalMilkBought').textContent = `${reportData.totalMilkBought.toFixed(2)} L`;
+            document.getElementById('totalMilkSold').textContent = `${reportData.totalMilkSold.toFixed(2)} L`;
+            document.getElementById('totalPaymentsMade').textContent = formatCurrency(reportData.totalPaymentsMade);
+            document.getElementById('totalPaymentsReceived').textContent = formatCurrency(reportData.totalPaymentsReceived);
+            document.getElementById('grossProfitLoss').textContent = formatCurrency(reportData.grossProfitLoss);
+
+            // Update Chart
+            const ctx = document.getElementById('milkQuantityChart').getContext('2d');
+            const chartNoDataMessage = document.getElementById('chartNoDataMessage');
+
+            if (reportData.chartData.labels.length === 0) {
+                if (milkQuantityChartInstance) {
+                    milkQuantityChartInstance.destroy();
+                    milkQuantityChartInstance = null;
+                }
+                chartNoDataMessage.classList.remove('hidden');
+            } else {
+                chartNoDataMessage.classList.add('hidden');
+                if (milkQuantityChartInstance) {
+                    milkQuantityChartInstance.data.labels = reportData.chartData.labels;
+                    milkQuantityChartInstance.data.datasets[0].data = reportData.chartData.bought;
+                    milkQuantityChartInstance.data.datasets[1].data = reportData.chartData.sold;
+                    milkQuantityChartInstance.update();
+                } else {
+                    milkQuantityChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: reportData.chartData.labels,
+                            datasets: [{
+                                label: 'Milk Bought (L)',
+                                data: reportData.chartData.bought,
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }, {
+                                label: 'Milk Sold (L)',
+                                data: reportData.chartData.sold,
+                                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Daily Milk Quantity Bought vs. Sold'
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Date'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Quantity (Liters)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
         // Master render function to update all sections
         function renderAllData() {
             renderCustomers();
             renderTransactions();
             renderPayments();
             renderDashboard();
+            renderReports(); // Call renderReports as well
         }
 
         // --- Form Handling & CRUD Operations ---
@@ -1522,6 +1757,7 @@
 
         // Transaction Form
         const transactionForm = document.getElementById('transactionForm');
+        const transactionEditIdHidden = document.getElementById('transactionEditId'); // New hidden field for edit ID
         const transactionCustomerSearchInput = document.getElementById('transactionCustomerSearch'); // New search input
         const transactionCustomerIdHidden = document.getElementById('transactionCustomerId'); // Hidden ID field
         const customerSearchResultsDiv = document.getElementById('customerSearchResults'); // Div for search results
@@ -1588,6 +1824,7 @@
 
         transactionForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const id = transactionEditIdHidden.value; // Get ID for edit
             const customerId = transactionCustomerIdHidden.value; // Get ID from hidden field
             const selectedCustomer = customers.find(c => c.id === customerId);
 
@@ -1611,29 +1848,64 @@
                 date = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
             }
 
-            if (isNaN(quantity) || isNaN(rate) || !milkType || !shift) {
-                showModal('Input Error', 'Quantity, Rate, Milk Type, and Shift are required and must be valid numbers/selections.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
+            // Removed !shift from the validation condition
+            if (isNaN(quantity) || isNaN(rate) || !milkType) {
+                showModal('Input Error', 'Quantity, Rate, and Milk Type are required and must be valid numbers/selections.', () => {}, 'OK', '', 'bg-blue-600 hover:bg-blue-700');
                 return;
             }
 
-            transactions.push({
-                id: generateId('transaction'),
-                customerId,
-                type: transactionType,
-                quantity,
-                rate,
-                milkType,
-                shift,
-                date
-            });
+            if (id) {
+                // Update existing transaction
+                const index = transactions.findIndex(t => t.id === id);
+                if (index !== -1) {
+                    transactions[index] = { ...transactions[index], customerId, type: transactionType, quantity, rate, milkType, shift, date };
+                }
+            } else {
+                // Add new transaction
+                transactions.push({
+                    id: generateId('transaction'),
+                    customerId,
+                    type: transactionType,
+                    quantity,
+                    rate,
+                    milkType,
+                    shift, // Shift is now optional
+                    date
+                });
+            }
+
             transactionForm.reset();
+            transactionEditIdHidden.value = ''; // Clear hidden edit ID
             transactionCustomerSearchInput.value = ''; // Clear search input
             transactionCustomerIdHidden.value = ''; // Clear hidden ID
             selectedCustomerTypeDisplay.value = ''; // Clear display field
             saveData(); // Save data to localStorage after changes
-            transactionPaginationState.currentPage = 1; // Reset to first page after adding
+            transactionPaginationState.currentPage = 1; // Reset to first page after adding/updating
             renderAllData();
         });
+
+        function editTransaction(id) {
+            const transaction = transactions.find(t => t.id === id);
+            if (transaction) {
+                transactionEditIdHidden.value = transaction.id;
+                transactionCustomerIdHidden.value = transaction.customerId;
+
+                const customer = customers.find(c => c.id === transaction.customerId);
+                if (customer) {
+                    transactionCustomerSearchInput.value = customer.name;
+                    selectedCustomerTypeDisplay.value = customer.type === 'seller' ? 'Seller' : 'Buyer';
+                } else {
+                    transactionCustomerSearchInput.value = 'Unknown Customer';
+                    selectedCustomerTypeDisplay.value = 'N/A';
+                }
+
+                shiftSelect.value = transaction.shift || '';
+                transactionQuantityInput.value = transaction.quantity;
+                transactionRateInput.value = transaction.rate;
+                milkTypeSelect.value = transaction.milkType;
+                transactionDateInput.value = transaction.date;
+            }
+        }
 
         function deleteTransaction(id) {
             showModal(
@@ -1650,6 +1922,7 @@
 
         // Payment Form
         const paymentForm = document.getElementById('paymentForm');
+        const paymentEditIdHidden = document.getElementById('paymentEditId'); // New hidden field for edit ID
         const paymentCustomerSearchInput = document.getElementById('paymentCustomerSearch'); // New search input for payments
         const paymentCustomerIdHidden = document.getElementById('paymentCustomerId'); // Hidden ID field for payments
         const paymentCustomerSearchResultsDiv = document.getElementById('paymentCustomerSearchResults'); // Div for search results for payments
@@ -1702,6 +1975,7 @@
 
         paymentForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const id = paymentEditIdHidden.value; // Get ID for edit
             const customerId = paymentCustomerIdHidden.value; // Get ID from hidden field
             const selectedCustomer = customers.find(c => c.id === customerId);
 
@@ -1725,21 +1999,53 @@
                 return;
             }
 
-            payments.push({
-                id: generateId('payment'),
-                customerId,
-                type,
-                amount,
-                date
-            });
+            if (id) {
+                // Update existing payment
+                const index = payments.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    payments[index] = { ...payments[index], customerId, type, amount, date };
+                }
+            } else {
+                // Add new payment
+                payments.push({
+                    id: generateId('payment'),
+                    customerId,
+                    type,
+                    amount,
+                    date
+                });
+            }
+
             paymentForm.reset();
+            paymentEditIdHidden.value = ''; // Clear hidden edit ID
             paymentCustomerSearchInput.value = ''; // Clear search input
             paymentCustomerIdHidden.value = ''; // Clear hidden ID
             paymentSelectedCustomerTypeDisplay.value = ''; // Clear display field
             saveData(); // Save data to localStorage after changes
-            paymentPaginationState.currentPage = 1; // Reset to first page after adding
+            paymentPaginationState.currentPage = 1; // Reset to first page after adding/updating
             renderAllData();
         });
+
+        function editPayment(id) {
+            const payment = payments.find(p => p.id === id);
+            if (payment) {
+                paymentEditIdHidden.value = payment.id;
+                paymentCustomerIdHidden.value = payment.customerId;
+
+                const customer = customers.find(c => c.id === payment.customerId);
+                if (customer) {
+                    paymentCustomerSearchInput.value = customer.name;
+                    paymentSelectedCustomerTypeDisplay.value = customer.type === 'seller' ? 'Seller' : 'Buyer';
+                } else {
+                    paymentCustomerSearchInput.value = 'Unknown Customer';
+                    paymentSelectedCustomerTypeDisplay.value = 'N/A';
+                }
+
+                document.getElementById('paymentType').value = payment.type;
+                document.getElementById('paymentAmount').value = payment.amount;
+                document.getElementById('paymentDate').value = payment.date;
+            }
+        }
 
         function deletePayment(id) {
             showModal(
@@ -1760,7 +2066,8 @@
             customers: { button: document.getElementById('customersTab'), section: document.getElementById('customersSection') },
             transactions: { button: document.getElementById('transactionsTab'), section: document.getElementById('transactionsSection') },
             payments: { button: document.getElementById('paymentsTab'), section: document.getElementById('paymentsSection') },
-            dataManagement: { button: document.getElementById('dataManagementTab'), section: document.getElementById('dataManagementSection') }, // New tab
+            reports: { button: document.getElementById('reportsTab'), section: document.getElementById('reportsSection') }, // New tab definition
+            dataManagement: { button: document.getElementById('dataManagementTab'), section: document.getElementById('dataManagementSection') },
         };
 
         const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -1881,6 +2188,10 @@
             header.addEventListener('click', (e) => handleSortClick(e, paymentSortConfig, renderPayments, paymentPaginationState));
         });
 
+        // Reports Date Range Listeners
+        document.getElementById('reportStartDate').addEventListener('change', renderReports);
+        document.getElementById('reportEndDate').addEventListener('change', renderReports);
+
         // --- Missing Transactions Feature Logic ---
         const missingTransactionDateInput = document.getElementById('missingTransactionDate');
         const checkMissingTransactionsBtn = document.getElementById('checkMissingTransactionsBtn');
@@ -1943,6 +2254,21 @@
             missingTransactionDateInput.value = `${year}-${month}-${day}`;
         }
 
+        // Set default date for reports to cover a reasonable period (e.g., last 30 days)
+        function setInitialReportDateRange() {
+            const today = new Date();
+            const endDate = today.toISOString().split('T')[0];
+
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            const startDate = thirtyDaysAgo.toISOString().split('T')[0];
+
+            document.getElementById('reportStartDate').value = startDate;
+            document.getElementById('reportEndDate').value = endDate;
+            reportDateRange.start = startDate;
+            reportDateRange.end = endDate;
+        }
+
 
         // --- JSON File Management Event Listeners (now attached to elements in dataManagementSection) ---
         // These elements are now within the dataManagementSection, so their IDs are unique.
@@ -1989,8 +2315,9 @@
             }
 
             loadData(); // Load initial data from localStorage
-            setActiveTab('dashboard'); // Set initial active tab
             setInitialMissingTransactionDate(); // Set default date for missing transactions
+            setInitialReportDateRange(); // Set default date range for reports
+            setActiveTab('dashboard'); // Set initial active tab (will trigger renderAllData)
         };
     </script>
 </body>
